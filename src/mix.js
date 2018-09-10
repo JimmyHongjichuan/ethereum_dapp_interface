@@ -25,7 +25,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[1];
+let curNode = nodes[0];
 /**
  * eos 请求路径
  */
@@ -227,7 +227,7 @@ async function delegatebw(privateKey, from, receiver, cpu, net) {
  * 赎回
  *
  * @param privateKey 私钥
- * @param account 账户
+ * @param account 账户,接收者也是此账户
  * @param cpu cpu（eos）
  * @param net net（eos）
  */
@@ -250,6 +250,26 @@ async function undelegatebw(privateKey, account, cpu, net) {
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
     console.log("undelegatebw result : ", processedTransaction);
+}
+
+/**
+ * refund
+ * undelegatebw执行三天后，再操作refund
+ * @param account
+ * @return {Promise<void>}
+ */
+async function refund(privateKey,account) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.refund(account, false);
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("refund result : ", processedTransaction);
 }
 
 /**
@@ -399,7 +419,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxx';
+let prikey = 'xxxxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -418,3 +438,11 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
 
 // delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
+
+//undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
+
+// let ret=getAccount('williamoony5');
+// console.log(ret);
+
+refund(prikey,'williamoony5');
+
