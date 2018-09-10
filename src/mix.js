@@ -21,6 +21,12 @@ let nodes = [
     }
 ];
 /**
+ * 当前使用的节点
+ *
+ * @type {number}
+ */
+let curNode = nodes[1];
+/**
  * eos 请求路径
  */
 let urls = {
@@ -362,7 +368,7 @@ function getBlock(blockNumberOrId) {
  * @param uri
  */
 function post(content, uri) {
-    let node = nodes[0];
+    let node = curNode;
     let url = node.schema + '://' + node.hostname + (node.port ? (':' + node.port) : '') + node.prefix + uri;
     let ret = request('POST', url, content == null ? '{}' : {
         json: content
