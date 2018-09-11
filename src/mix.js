@@ -18,6 +18,12 @@ let nodes = [
         schema: 'https',
         hostname: 'api1.eosasia.one',
         prefix: '',
+    },
+    {
+        schema: 'http',
+        hostname: '172.18.11.52',
+        port: 8888,
+        prefix: '',
     }
 ];
 /**
@@ -25,7 +31,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[0];
+let curNode = nodes[2];
 /**
  * eos 请求路径
  */
@@ -117,8 +123,8 @@ function getTableRows(scope, code, table) {
  * action 列表
  *
  * @param account 账户
- * @param pos pos
- * @param offset offset
+ * @param pos pos 最后一个元素为-1
+ * @param offset offset 如果pos为-1，offset必须<-1
  */
 function getActions(account, pos, offset) {
     let data = {account_name: account, pos: pos, offset: offset};
@@ -145,7 +151,7 @@ async function transfer(privateKey, from, receiver, amount, memo) {
     let nc = await eos.transfer(from, receiver, amount, memo, false);
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("transfer result : ", processedTransaction);
+    console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -192,7 +198,7 @@ async function newAccount(privateKey, creatoraccount, newaccount, newaccount_pub
     });
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction)
-    console.log("new account result : ", processedTransaction);
+    console.log("new account result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -220,7 +226,7 @@ async function delegatebw(privateKey, from, receiver, cpu, net) {
     });
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("delegatebw result : ", processedTransaction);
+    console.log("delegatebw result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -249,7 +255,7 @@ async function undelegatebw(privateKey, account, cpu, net) {
     });
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("undelegatebw result : ", processedTransaction);
+    console.log("undelegatebw result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -258,7 +264,7 @@ async function undelegatebw(privateKey, account, cpu, net) {
  * @param account
  * @return {Promise<void>}
  */
-async function refund(privateKey,account) {
+async function refund(privateKey, account) {
     let transactionHeaders = await prepareHeader();
     let eos = Eos({
         chainId: config.chainId,
@@ -269,7 +275,7 @@ async function refund(privateKey,account) {
     let nc = await eos.refund(account, false);
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("refund result : ", processedTransaction);
+    console.log("refund result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -298,7 +304,7 @@ async function buyrambytes(privateKey, from, receiver, bytes) {
     });
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("buyrambytes result : ", processedTransaction);
+    console.log("buyrambytes result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -325,7 +331,7 @@ async function sellram(privateKey, account, bytes) {
     });
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
-    console.log("sellram result : ", processedTransaction);
+    console.log("sellram result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -419,7 +425,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxxxx';
+let prikey = '5JSkmB7crGY8cFMvL7wTRj6QN8bntmcPfnAwg3hMBb5xW4XehLi';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -444,5 +450,9 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // let ret=getAccount('williamoony5');
 // console.log(ret);
 
-refund(prikey,'williamoony5');
+//refund(prikey,'williamoony5');
+
+// let ret = getActions('williamoony5', 0, 10);
+// console.log(ret.actions.length);
+// console.log(JSON.stringify(ret));
 
