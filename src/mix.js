@@ -509,7 +509,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = '5JSkmB7crGY8cFMvL7wTRj6QN8bntmcPfnAwg3hMBb5xW4XehLi';
+let prikey = 'xxxxxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
