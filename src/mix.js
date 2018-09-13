@@ -31,7 +31,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[2];
+let curNode = nodes[1];
 /**
  * eos 请求路径
  */
@@ -78,6 +78,90 @@ function getAccount(account) {
     let data = {account_name: account};
     let ret = post(data, urls.getAccount);
     return JSON.parse(ret.getBody('utf-8'));
+}
+
+/**
+ * 替换
+ *
+ *
+ [{
+    "perm_name": "active",
+    "parent": "owner",
+    "required_auth": {
+        "threshold": 1,
+        "keys": [{
+            "key": "EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a",
+            "weight": 1
+        }],
+        "accounts": [],
+        "waits": []
+    }
+}, {
+    "perm_name": "owner",
+    "parent": "",
+    "required_auth": {
+        "threshold": 1,
+        "keys": [{
+            "key": "EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a",
+            "weight": 1
+        }],
+        "accounts": [],
+        "waits": []
+    }
+}]
+ *
+ * @param account 账户
+ * @param owner 新的owner
+ * @param active 新的active
+ * @return {any}
+ */
+function newPermissions(account, owner, active) {
+    const perms = JSON.parse(JSON.stringify(account.permissions));// clone
+    for (const perm of perms) {
+        if (perm.perm_name === 'owner') {   //owner
+            if (owner) {
+                for (const key of perm.required_auth.keys) {
+                    key.key = owner;
+                }
+            }
+        } else if (perm.perm_name === 'active') {   //active
+            if (active) {
+                for (const key of perm.required_auth.keys) {
+                    key.key = active;
+                }
+            }
+        }
+    }
+    return perms;
+}
+
+/**
+ * 更新perms
+ * @param privateKey account的私钥（owner）
+ * @param account 待更新的账户名
+ * @param perms perms
+ */
+async function updateAuth(privateKey, account, perms) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.transaction(tr => {
+        for (const perm of perms) {
+            tr.updateauth({
+                account: account,
+                permission: perm.perm_name,
+                parent: perm.parent,
+                auth: perm.required_auth
+            }, {authorization: `${account}@owner`})
+        }
+    });
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("updateAuth result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -447,8 +531,16 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
-// let ret=getAccount('williamoony5');
+// let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
 // console.log(ret);
+
+
+// let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
+// let perms = newPermissions(acc, 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a', 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a');//替换成williamoony5的公钥
+// console.log(perms);
+// updateAuth('xxxxxxxxxx', 'williamoony2', perms);
+
+
 
 //refund(prikey,'williamoony5');
 
