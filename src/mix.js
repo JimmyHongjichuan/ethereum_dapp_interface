@@ -12,7 +12,7 @@ let nodes = [
         schema: 'http',
         hostname: 'localhost',
         port: 9082,
-        prefix: '/eosmix/nodeos',
+        prefix: '/eosmix/nodeos',       //http://localhost:9082/eosmix/nodeos
     },
     {
         schema: 'https',
@@ -31,7 +31,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[1];
+let curNode = nodes[0];
 /**
  * eos 请求路径
  */
@@ -51,19 +51,19 @@ let urls = {
     getActions: '/v1/history/get_actions',
     getTransaction: '/v1/history/get_transaction',
     getKeyAccounts: '/v1/history/get_key_accounts',
-    getControlledAccounts: '/v1/history/get_controlled_accounts'
+    getControlledAccounts: '/v1/history/get_controlled_accounts',
 };
 /**
- * 配置
+ * 配置,只需要chainId，其他的配置都不需要
  *
  * @type {{chainId: string, keyProvider: string[], expireInSeconds: number, broadcast: boolean, verbose: boolean, sign: boolean}}
  */
 let config = {
     chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
     keyProvider: ['xxxxxxx'],        //私钥
-    //httpEndpoint: nodeUrl,
+    httpEndpoint: null,
     expireInSeconds: 60,
-    broadcast: true,
+    broadcast: false,
     verbose: false, // API activity
     sign: true
 };
@@ -253,7 +253,8 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
     let eos = Eos({
         chainId: config.chainId,
         keyProvider: privateKey,
-        httpEndpoint: 'https://api1.eosasia.one',  //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+        //httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+        httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
         transactionHeaders
     });
     let nc = await eos.transaction(
@@ -276,9 +277,7 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
             ]
         }
     );
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("transfer result : ", JSON.stringify(processedTransaction));
+    console.log(JSON.stringify(nc));
 }
 
 /**
@@ -515,6 +514,17 @@ function getBlock(blockNumberOrId) {
 }
 
 /**
+ * 下载abi
+ * @param account 合约账户
+ * @return {any}
+ */
+function getAbi(account) {
+    let data = {account_name: account};
+    let ret = post(data, urls.getAbi);
+    return JSON.parse(ret.getBody('utf-8'));
+}
+
+/**
  * 发送数据
  *
  * @param content
@@ -592,5 +602,9 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
-// transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '1.000 IQ', '转点智商币，聪明起来！');
-transfer(prikey, 'eosadddddddd', 'williamoony5', 'williamoony2', '1.0000 ADD', '转点add');
+// transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
+//transfer(prikey, 'eosadddddddd', 'williamoony5', 'williamoony2', '0.1000 ADD', '转点add');
+
+
+// let ret = getAbi('everipediaiq');
+// console.log(JSON.stringify(ret));
