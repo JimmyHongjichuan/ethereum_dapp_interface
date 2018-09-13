@@ -541,7 +541,6 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // updateAuth('xxxxxxxxxx', 'williamoony2', perms);
 
 
-
 //refund(prikey,'williamoony5');
 
 // let ret = getActions('williamoony5', 0, 10);
