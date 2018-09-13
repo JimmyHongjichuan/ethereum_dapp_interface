@@ -217,7 +217,7 @@ function getActions(account, pos, offset) {
 }
 
 /**
- *
+ * 转账（EOS）
  * @param privateKey 私钥
  * @param from 转账者
  * @param receiver 接收者
@@ -225,7 +225,7 @@ function getActions(account, pos, offset) {
  * @param memo 留言
  * @return {Promise<void>}
  */
-async function transfer(privateKey, from, receiver, amount, memo) {
+async function transferEos(privateKey, from, receiver, amount, memo) {
     let transactionHeaders = prepareHeader();
     let eos = Eos({
         chainId: config.chainId,
@@ -233,6 +233,49 @@ async function transfer(privateKey, from, receiver, amount, memo) {
         transactionHeaders
     });
     let nc = await eos.transfer(from, receiver, amount, memo, false);
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("transferEos result : ", JSON.stringify(processedTransaction));
+}
+
+/**
+ * 转账（token）
+ * @param privateKey 私钥
+ * @param code token的code
+ * @param from from account
+ * @param receiver to account
+ * @param amount amount
+ * @param memo 留言
+ * @return {Promise<void>}
+ */
+async function transfer(privateKey, code, from, receiver, amount, memo) {
+    let transactionHeaders = prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: 'https://api1.eosasia.one',  //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+        transactionHeaders
+    });
+    let nc = await eos.transaction(
+        {
+            actions: [
+                {
+                    account: code,
+                    name: 'transfer',
+                    authorization: [{
+                        actor: from,
+                        permission: 'active'
+                    }],
+                    data: {
+                        from: from,
+                        to: receiver,
+                        quantity: amount,
+                        memo: ''
+                    }
+                }
+            ]
+        }
+    );
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
     console.log("transfer result : ", JSON.stringify(processedTransaction));
@@ -509,7 +552,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxxxxx';
+let prikey = 'xxxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -522,7 +565,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // console.log(ret);
 
 
-// transfer(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
+// transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
 // let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
 // newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
@@ -547,3 +590,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // console.log(ret.actions.length);
 // console.log(JSON.stringify(ret));
 
+// transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
+
+// transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '1.000 IQ', '转点智商币，聪明起来！');
+transfer(prikey, 'eosadddddddd', 'williamoony5', 'williamoony2', '1.0000 ADD', '转点add');
