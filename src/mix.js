@@ -205,7 +205,7 @@ function getTableRows(scope, code, table) {
 
 /**
  * ram价格
- *
+ * RAM价格 = (n * quote.balance) / (n + base.balance / 1024)
  * @param ram 内存（单位kb）
  */
 function ramPrice(ram) {
