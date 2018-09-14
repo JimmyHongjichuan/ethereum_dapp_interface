@@ -31,7 +31,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[0];
+let curNode = nodes[1];
 /**
  * eos 请求路径
  */
@@ -201,6 +201,21 @@ function getTableRows(scope, code, table) {
     let data = {scope: scope, code: code, table: table, json: true};
     let ret = post(data, urls.getTableRow);
     return JSON.parse(ret.getBody('utf-8'));
+}
+
+/**
+ * ram价格
+ *
+ * @param ram 内存（单位kb）
+ */
+function ramPrice(ram) {
+    let ret = getTableRows('eosio', 'eosio', 'rammarket');
+    let row = ret.rows[0];
+    let quote = row.quote.balance;
+    quote = quote.substr(0, quote.length - 3).trim();
+    let base = row.base.balance;
+    base = base.substr(0, base.length - 3).trim();
+    return (ram * parseFloat(quote)) / (ram + parseFloat(base) / 1024);
 }
 
 /**
@@ -585,7 +600,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
 // let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
-// console.log(ret);
+// console.log(JSON.stringify(ret));
 
 
 // let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
@@ -608,3 +623,10 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
+
+
+// let ret = getTableRows('eosio', 'eosio', 'rammarket');     //ram市场
+// console.log(JSON.stringify(ret));
+
+// let ret = ramPrice(1);
+// console.log(ret);
