@@ -1,6 +1,8 @@
 const Eos = require('eosjs');
 const ecc = require('eosjs-ecc');
 const request = require('sync-request');
+const binaryen = require('binaryen');
+const fs = require('fs');
 
 
 /**
@@ -28,6 +30,8 @@ let nodes = [
 ];
 /**
  * 当前使用的节点
+ *
+ * 可以直接使用1号野节点单独进行客户端测试
  *
  * @type {number}
  */
@@ -540,6 +544,34 @@ function getAbi(account) {
 }
 
 /**
+ * 发币
+ * @param privateKey 私钥
+ * @param account 账户
+ * @param supply 供应量
+ * @return {Promise<void>}
+ */
+async function deployToken(privateKey, account, supply) {
+    let wasm = fs.readFileSync(`./eosio.token.wasm`);
+    let abi = fs.readFileSync(`./eosio.token.abi`);
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        //binaryen: binaryen,
+        httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+        //httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
+        transactionHeaders
+    });
+    await eos.setcode(account, 0, 0, wasm);
+    await eos.setabi(account, JSON.parse(abi));
+
+    await eos.transaction(account, myaccount => {
+        myaccount.create(account, supply);
+        myaccount.issue(account, supply, 'token inited.');
+    });
+}
+
+/**
  * 发送数据
  *
  * @param content
@@ -583,7 +615,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
 
-// let ret = getCurrencyBalance('eosio.token', 'williamoony5', 'EOS');//获取代币持有情况
+// let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
 
 // let ret = getTableRows('williamoony5', 'eosio', 'userres');//获取资源情况
@@ -630,3 +662,5 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = ramPrice(1);
 // console.log(ret);
+
+deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
