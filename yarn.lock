@@ -59,6 +59,10 @@ binaryen@^37.0.0:
   version "37.0.0"
   resolved "http://registry.npm.taobao.org/binaryen/download/binaryen-37.0.0.tgz#c392bc784b6d46da8fc918b1a4ed8257a0cd8b08"
 
+binaryen@latest:
+  version "51.0.0"
+  resolved "http://registry.npm.taobao.org/binaryen/download/binaryen-51.0.0.tgz#7bf67547ba5e30713be8cd5457553c594948b8a9"
+
 bn.js@^4.11.8:
   version "4.11.8"
   resolved "http://registry.npm.taobao.org/bn.js/download/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
