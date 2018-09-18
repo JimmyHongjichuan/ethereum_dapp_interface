@@ -653,6 +653,30 @@ async function deployToken(privateKey, account, supply) {
     });
 }
 
+
+/**
+ * 投票
+ *
+ */
+async function voteproducer(privateKey, voter, proxy, producers) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.voteproducer({
+            voter: voter,
+            proxy: proxy,
+            producers: producers
+        });
+
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+}
+
 /**
  * 发送数据
  *
@@ -691,7 +715,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxxx';
+let prikey = 'xxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -732,8 +756,12 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
+//transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
 
+let voter = "yyloveuu1314"
+let proxy = ""
+let producers = ['eoshuobipool']
+voteproducer(prikey, voter, proxy, producers);
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
