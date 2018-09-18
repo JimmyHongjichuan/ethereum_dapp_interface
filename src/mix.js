@@ -268,117 +268,123 @@ async function transferEos(privateKey, from, receiver, amount, memo) {
  * @return {Promise<void>}
  */
 async function transfer(privateKey, code, from, receiver, amount, memo) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        // httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
-        // httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
-	      httpEndpoint: null,
-        transactionHeaders
-    });
-	  await eos.fc.abiCache.abi(code, {
-			  "version": "eosio::abi/1.0",
-			  "types": [{
-				  "new_type_name": "account_name",
-				  "type": "name"
-			  }],
-			  "structs": [{
-				  "name": "transfer",
-				  "base": "",
-				  "fields": [
-					  {"name":"from", "type":"account_name"},
-					  {"name":"to", "type":"account_name"},
-					  {"name":"quantity", "type":"asset"},
-					  {"name":"memo", "type":"string"}
-				  ]
-			  },{
-				  "name": "create",
-				  "base": "",
-				  "fields": [
-					  {"name":"issuer", "type":"account_name"},
-					  {"name":"maximum_supply", "type":"asset"}
-				  ]
-			  },{
-				  "name": "issue",
-				  "base": "",
-				  "fields": [
-					  {"name":"to", "type":"account_name"},
-					  {"name":"quantity", "type":"asset"},
-					  {"name":"memo", "type":"string"}
-				  ]
-			  },{
-				  "name": "account",
-				  "base": "",
-				  "fields": [
-					  {"name":"balance", "type":"asset"}
-				  ]
-			  },{
-				  "name": "currency_stats",
-				  "base": "",
-				  "fields": [
-					  {"name":"supply", "type":"asset"},
-					  {"name":"max_supply", "type":"asset"},
-					  {"name":"issuer", "type":"account_name"}
-				  ]
-			  }
-			  ],
-			  "actions": [{
-				  "name": "transfer",
-				  "type": "transfer",
-				  "ricardian_contract": ""
-			  },{
-				  "name": "issue",
-				  "type": "issue",
-				  "ricardian_contract": ""
-			  }, {
-				  "name": "create",
-				  "type": "create",
-				  "ricardian_contract": ""
-			  }
-			
-			  ],
-			  "tables": [{
-				  "name": "accounts",
-				  "type": "account",
-				  "index_type": "i64",
-				  "key_names" : ["currency"],
-				  "key_types" : ["uint64"]
-			  },{
-				  "name": "stat",
-				  "type": "currency_stats",
-				  "index_type": "i64",
-				  "key_names" : ["currency"],
-				  "key_types" : ["uint64"]
-			  }
-			  ],
-			  "ricardian_clauses": [],
-			  "abi_extensions": []
-		  }
-	  );
-    let nc = await eos.transaction(
-        {
-            actions: [
-                {
-                    account: code,
-                    name: 'transfer',
-                    authorization: [{
-                        actor: from,
-                        permission: 'active'
-                    }],
-                    data: {
-                        from: from,
-                        to: receiver,
-                        quantity: amount,
-                        memo: ''
-                    }
-                }
-            ]
-        }
-    );;
-	let transaction = nc.transaction;
-	let processedTransaction = pushTransaction(transaction);
-	console.log("transfer result : ", JSON.stringify(processedTransaction));
+	try {
+		
+		let transactionHeaders = prepareHeader();
+		let eos = Eos({
+			chainId: config.chainId,
+			keyProvider: privateKey,
+			// httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+			// httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
+			httpEndpoint: null,
+			transactionHeaders
+		});
+		await eos.fc.abiCache.abi(code, {
+				"version": "eosio::abi/1.0",
+				"types": [{
+					"new_type_name": "account_name",
+					"type": "name"
+				}],
+				"structs": [{
+					"name": "transfer",
+					"base": "",
+					"fields": [
+						{"name":"from", "type":"account_name"},
+						{"name":"to", "type":"account_name"},
+						{"name":"quantity", "type":"asset"},
+						{"name":"memo", "type":"string"}
+					]
+				},{
+					"name": "create",
+					"base": "",
+					"fields": [
+						{"name":"issuer", "type":"account_name"},
+						{"name":"maximum_supply", "type":"asset"}
+					]
+				},{
+					"name": "issue",
+					"base": "",
+					"fields": [
+						{"name":"to", "type":"account_name"},
+						{"name":"quantity", "type":"asset"},
+						{"name":"memo", "type":"string"}
+					]
+				},{
+					"name": "account",
+					"base": "",
+					"fields": [
+						{"name":"balance", "type":"asset"}
+					]
+				},{
+					"name": "currency_stats",
+					"base": "",
+					"fields": [
+						{"name":"supply", "type":"asset"},
+						{"name":"max_supply", "type":"asset"},
+						{"name":"issuer", "type":"account_name"}
+					]
+				}
+				],
+				"actions": [{
+					"name": "transfer",
+					"type": "transfer",
+					"ricardian_contract": ""
+				},{
+					"name": "issue",
+					"type": "issue",
+					"ricardian_contract": ""
+				}, {
+					"name": "create",
+					"type": "create",
+					"ricardian_contract": ""
+				}
+				
+				],
+				"tables": [{
+					"name": "accounts",
+					"type": "account",
+					"index_type": "i64",
+					"key_names" : ["currency"],
+					"key_types" : ["uint64"]
+				},{
+					"name": "stat",
+					"type": "currency_stats",
+					"index_type": "i64",
+					"key_names" : ["currency"],
+					"key_types" : ["uint64"]
+				}
+				],
+				"ricardian_clauses": [],
+				"abi_extensions": []
+			}
+		);
+		let nc = await eos.transaction(
+			{
+				actions: [
+					{
+						account: code,
+						name: 'transfer',
+						authorization: [{
+							actor: from,
+							permission: 'active'
+						}],
+						data: {
+							from: from,
+							to: receiver,
+							quantity: amount,
+							memo: memo
+						}
+					}
+				]
+			}
+		);;
+		let transaction = nc.transaction;
+		let processedTransaction = pushTransaction(transaction);
+		console.log("transfer result : ", JSON.stringify(processedTransaction));
+	}
+	catch (e) {
+		console.error(e);
+	}
 }
 
 /**
@@ -390,42 +396,47 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
  * @param newaccount_pubkey 新账户的公钥
  * @returns {Promise<void>}
  */
-async function newAccount(privateKey, creatoraccount, newaccount, newaccount_pubkey, ram = 4096, cpu = '0.2000 EOS', net = '0.2000 EOS') {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.transaction(tr => {
-        //新账号
-        tr.newaccount({
-            creator: creatoraccount,
-            name: newaccount,
-            owner: newaccount_pubkey,
-            active: newaccount_pubkey
-        });
-
-        //为新账号充RAM
-        tr.buyrambytes({
-            payer: creatoraccount,
-            receiver: newaccount,
-            bytes: ram
-        });
-
-        //为新账号抵押CPU和NET
-        tr.delegatebw({
-            from: creatoraccount,
-            receiver: newaccount,
-            stake_net_quantity: net,
-            stake_cpu_quantity: cpu,
-            transfer: 0
-        });
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction)
-    console.log("new account result : ", JSON.stringify(processedTransaction));
+async function newAccount(privateKey, creatoraccount, newaccount, owner_pubkey, active_pubkey, ram = 4096, cpu = '0.1500 EOS', net = '0.0500 EOS') {
+  try {
+	  let transactionHeaders = await prepareHeader();
+	  let eos = Eos({
+		  chainId: config.chainId,
+		  keyProvider: privateKey,
+		  httpEndpoint: null,
+		  transactionHeaders
+	  });
+	  let nc = await eos.transaction(tr => {
+		  //新账号
+		  tr.newaccount({
+			  creator: creatoraccount,
+			  name: newaccount,
+			  owner: owner_pubkey,
+			  active: active_pubkey
+		  });
+		
+		  //为新账号充RAM
+		  tr.buyrambytes({
+			  payer: creatoraccount,
+			  receiver: newaccount,
+			  bytes: ram
+		  });
+		
+		  //为新账号抵押CPU和NET
+		  tr.delegatebw({
+			  from: creatoraccount,
+			  receiver: newaccount,
+			  stake_net_quantity: net,
+			  stake_cpu_quantity: cpu,
+			  transfer: 1
+		  });
+	  });
+	  let transaction = nc.transaction;
+	  let processedTransaction = pushTransaction(transaction)
+	  console.log("new account result : ", JSON.stringify(processedTransaction));
+  }
+  catch (e) {
+	  console.error(e);
+  }
 }
 
 /**
@@ -707,7 +718,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
 // let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
-// newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
+newAccount('xxx', 'ha3tcnrygqge', 'caoyanchang1', 'EOS7CAoFFB327BbqKqxSS14Ro6h1D1BWFmS64XwpwdDeG1Ny33LMy', 'EOS7KxWepZSBsheATHoEoWpthriHiLhzVeCdhE6GXU1tSyJQdv54B');
 
 // delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
 
@@ -732,7 +743,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
+// transfer('5JtXZZeBANx1FFhqVDWwHt2N7gppMSdMRxYovR3toTXi5waBt9s', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
 
 
 // let ret = getAbi('everipediaiq');
