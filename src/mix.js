@@ -678,6 +678,30 @@ async function voteproducer(privateKey, voter, proxy, producers) {
 }
 
 /**
+ * 注册为代理
+ * @param proxy:account register or unregister for proxy
+ * @param isproxy: ture for register, false for unregister
+ */
+async function regproxy(privateKey, proxy, isproxy) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.regproxy({
+        proxy: proxy,
+        isproxy: isproxy
+    });
+
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+}
+
+
+/**
  * 发送数据
  *
  * @param content
@@ -715,7 +739,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxx';
+let prikey = 'xxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -759,10 +783,11 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 //transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
 
 let voter = "yyloveuu1314"
-let proxy = ""
+let proxy = "hongyuanyang"
 let producers = ['eoshuobipool']
-voteproducer(prikey, voter, proxy, producers);
+//voteproducer(prikey, voter, proxy, producers);
 
+regproxy(prikey, proxy, 1)
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
 
