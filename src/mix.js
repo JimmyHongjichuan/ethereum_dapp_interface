@@ -718,14 +718,14 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
 // let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
-newAccount('xxx', 'ha3tcnrygqge', 'caoyanchang1', 'EOS7CAoFFB327BbqKqxSS14Ro6h1D1BWFmS64XwpwdDeG1Ny33LMy', 'EOS7KxWepZSBsheATHoEoWpthriHiLhzVeCdhE6GXU1tSyJQdv54B');
+// newAccount('xxx', 'ha3tcnrygqge', 'caoyanchang1', 'EOS7CAoFFB327BbqKqxSS14Ro6h1D1BWFmS64XwpwdDeG1Ny33LMy', 'EOS7KxWepZSBsheATHoEoWpthriHiLhzVeCdhE6GXU1tSyJQdv54B');
 
 // delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
-// let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
-// console.log(JSON.stringify(ret));
+let ret = getAccount('ha3tcnrygqge');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
+console.log(JSON.stringify(ret));
 
 
 // let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
