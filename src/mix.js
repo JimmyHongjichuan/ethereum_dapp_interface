@@ -656,7 +656,9 @@ async function deployToken(privateKey, account, supply) {
 
 /**
  * 投票
- *
+ * @param  voter 直投或委托别人代投的用户账户
+ * @param  proxy 为 '' 表示 voter直投， 如果不为空则为voter授权proxy代理投票，此时producers数组需为空
+ * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoshuobipool']
  */
 async function voteproducer(privateKey, voter, proxy, producers) {
     let transactionHeaders = await prepareHeader();
@@ -680,7 +682,7 @@ async function voteproducer(privateKey, voter, proxy, producers) {
 /**
  * 注册为代理
  * @param proxy:account register or unregister for proxy
- * @param isproxy: ture for register, false for unregister
+ * @param isproxy: 1 for register, 0 for unregister
  */
 async function regproxy(privateKey, proxy, isproxy) {
     let transactionHeaders = await prepareHeader();
@@ -777,17 +779,18 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // console.log(ret.actions.length);
 // console.log(JSON.stringify(ret));
 
-// transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
+// transfer(prikey, 'eosio.token', 'hongyuanyang', 'yyloveuu1314', '0.6000 EOS', '');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 //transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
 
-let voter = "yyloveuu1314"
-let proxy = "hongyuanyang"
-let producers = ['eoshuobipool']
-//voteproducer(prikey, voter, proxy, producers);
+//let voter = "yyloveuu1314"
+let voter = "chuanhhchuan"
+let proxy =''
+let producers = ['eos42freedom','eoshuobipool']
+voteproducer(prikey, voter, proxy, producers);
 
-regproxy(prikey, proxy, 1)
+//regproxy(prikey, proxy, 1)
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
 
