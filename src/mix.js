@@ -705,8 +705,8 @@ function randomKey() {
 let prikey = 'xxxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
-// let ret = getKeyAccounts(pubKey);
-// console.log(ret);
+let ret = getKeyAccounts('EOS8icXZmymmiVUbV7jERCereDY75Fo3MMNbbK8VVwPEGceifbT9D');
+console.log(ret);
 
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
@@ -724,8 +724,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
-let ret = getAccount('ha3tcnrygqge');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
-console.log(JSON.stringify(ret));
+// let ret = getAccount('ha3tcnrygqge');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
+// console.log(JSON.stringify(ret));
 
 
 // let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
@@ -743,7 +743,7 @@ console.log(JSON.stringify(ret));
 // transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-// transfer('5JtXZZeBANx1FFhqVDWwHt2N7gppMSdMRxYovR3toTXi5waBt9s', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
+// transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
 
 
 // let ret = getAbi('everipediaiq');
