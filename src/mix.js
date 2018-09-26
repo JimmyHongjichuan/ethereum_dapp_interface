@@ -56,6 +56,7 @@ let urls = {
     getTransaction: '/v1/history/get_transaction',
     getKeyAccounts: '/v1/history/get_key_accounts',
     getControlledAccounts: '/v1/history/get_controlled_accounts',
+    getProducers: '/v1/chain/get_producers',
 };
 /**
  * 配置,只需要chainId，其他的配置都不需要
@@ -654,6 +655,20 @@ async function deployToken(privateKey, account, supply) {
 }
 
 /**
+ * 查看超级节点
+ *
+ * @param account 账户名
+ * @return {any}
+ */
+function getProducers(isJson, lowerBound, limit) {
+    let data = {json: isJson,
+                lowerBound: lowerBound,
+                limit:limit};
+    let ret = post(data, urls.getProducers);
+    return JSON.parse(ret.getBody('utf-8'));
+}
+
+/**
  * 发送数据
  *
  * @param content
@@ -696,7 +711,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
-
+let ret =  getProducers(true, "", 1);
+console.log(ret);
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
 
