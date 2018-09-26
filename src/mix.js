@@ -275,88 +275,88 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
         keyProvider: privateKey,
         // httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
         // httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
-	      httpEndpoint: null,
+        httpEndpoint: null,
         transactionHeaders
     });
-	  await eos.fc.abiCache.abi(code, {
-			  "version": "eosio::abi/1.0",
-			  "types": [{
-				  "new_type_name": "account_name",
-				  "type": "name"
-			  }],
-			  "structs": [{
-				  "name": "transfer",
-				  "base": "",
-				  "fields": [
-					  {"name":"from", "type":"account_name"},
-					  {"name":"to", "type":"account_name"},
-					  {"name":"quantity", "type":"asset"},
-					  {"name":"memo", "type":"string"}
-				  ]
-			  },{
-				  "name": "create",
-				  "base": "",
-				  "fields": [
-					  {"name":"issuer", "type":"account_name"},
-					  {"name":"maximum_supply", "type":"asset"}
-				  ]
-			  },{
-				  "name": "issue",
-				  "base": "",
-				  "fields": [
-					  {"name":"to", "type":"account_name"},
-					  {"name":"quantity", "type":"asset"},
-					  {"name":"memo", "type":"string"}
-				  ]
-			  },{
-				  "name": "account",
-				  "base": "",
-				  "fields": [
-					  {"name":"balance", "type":"asset"}
-				  ]
-			  },{
-				  "name": "currency_stats",
-				  "base": "",
-				  "fields": [
-					  {"name":"supply", "type":"asset"},
-					  {"name":"max_supply", "type":"asset"},
-					  {"name":"issuer", "type":"account_name"}
-				  ]
-			  }
-			  ],
-			  "actions": [{
-				  "name": "transfer",
-				  "type": "transfer",
-				  "ricardian_contract": ""
-			  },{
-				  "name": "issue",
-				  "type": "issue",
-				  "ricardian_contract": ""
-			  }, {
-				  "name": "create",
-				  "type": "create",
-				  "ricardian_contract": ""
-			  }
-			
-			  ],
-			  "tables": [{
-				  "name": "accounts",
-				  "type": "account",
-				  "index_type": "i64",
-				  "key_names" : ["currency"],
-				  "key_types" : ["uint64"]
-			  },{
-				  "name": "stat",
-				  "type": "currency_stats",
-				  "index_type": "i64",
-				  "key_names" : ["currency"],
-				  "key_types" : ["uint64"]
-			  }
-			  ],
-			  "ricardian_clauses": [],
-			  "abi_extensions": []
-		  }
-	  );
+    await eos.fc.abiCache.abi(code, {
+            "version": "eosio::abi/1.0",
+            "types": [{
+                "new_type_name": "account_name",
+                "type": "name"
+            }],
+            "structs": [{
+                "name": "transfer",
+                "base": "",
+                "fields": [
+                    {"name": "from", "type": "account_name"},
+                    {"name": "to", "type": "account_name"},
+                    {"name": "quantity", "type": "asset"},
+                    {"name": "memo", "type": "string"}
+                ]
+            }, {
+                "name": "create",
+                "base": "",
+                "fields": [
+                    {"name": "issuer", "type": "account_name"},
+                    {"name": "maximum_supply", "type": "asset"}
+                ]
+            }, {
+                "name": "issue",
+                "base": "",
+                "fields": [
+                    {"name": "to", "type": "account_name"},
+                    {"name": "quantity", "type": "asset"},
+                    {"name": "memo", "type": "string"}
+                ]
+            }, {
+                "name": "account",
+                "base": "",
+                "fields": [
+                    {"name": "balance", "type": "asset"}
+                ]
+            }, {
+                "name": "currency_stats",
+                "base": "",
+                "fields": [
+                    {"name": "supply", "type": "asset"},
+                    {"name": "max_supply", "type": "asset"},
+                    {"name": "issuer", "type": "account_name"}
+                ]
+            }
+            ],
+            "actions": [{
+                "name": "transfer",
+                "type": "transfer",
+                "ricardian_contract": ""
+            }, {
+                "name": "issue",
+                "type": "issue",
+                "ricardian_contract": ""
+            }, {
+                "name": "create",
+                "type": "create",
+                "ricardian_contract": ""
+            }
+
+            ],
+            "tables": [{
+                "name": "accounts",
+                "type": "account",
+                "index_type": "i64",
+                "key_names": ["currency"],
+                "key_types": ["uint64"]
+            }, {
+                "name": "stat",
+                "type": "currency_stats",
+                "index_type": "i64",
+                "key_names": ["currency"],
+                "key_types": ["uint64"]
+            }
+            ],
+            "ricardian_clauses": [],
+            "abi_extensions": []
+        }
+    );
     let nc = await eos.transaction(
         {
             actions: [
@@ -376,10 +376,11 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
                 }
             ]
         }
-    );;
-	let transaction = nc.transaction;
-	let processedTransaction = pushTransaction(transaction);
-	console.log("transfer result : ", JSON.stringify(processedTransaction));
+    );
+    ;
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -658,15 +659,19 @@ async function deployToken(privateKey, account, supply) {
  * 查看超级节点
  *
  * @param lowerBound 账户名
+ * @param limit
  * @return {any}
  */
 function getProducers(lowerBound, limit) {
-    let data = {json: true,
-                lowerBound: lowerBound,
-                limit:limit};
+    let data = {
+        json: true,
+        lowerBound: lowerBound,
+        limit: limit
+    };
     let ret = post(data, urls.getProducers);
     return JSON.parse(ret.getBody('utf-8'));
 }
+
 /**
  * 投票
  * @param  voter 账户
@@ -714,6 +719,7 @@ async function regProxy(privateKey, proxy, isproxy) {
     let processedTransaction = pushTransaction(transaction);
     console.log("voteproducer result : ", JSON.stringify(processedTransaction));
 }
+
 /**
  * 发送数据
  *
@@ -757,7 +763,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
-let ret =  getProducers(true, "", 1);
+let ret = getProducers(true, "", 1);
 console.log(ret);
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
