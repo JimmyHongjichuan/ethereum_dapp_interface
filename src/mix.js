@@ -3,7 +3,7 @@ const ecc = require('eosjs-ecc');
 const request = require('sync-request');
 const binaryen = require('binaryen');
 const fs = require('fs');
-
+const EosApi = require('eosjs-api')
 
 /**
  * 节点列表
@@ -56,6 +56,7 @@ let urls = {
     getTransaction: '/v1/history/get_transaction',
     getKeyAccounts: '/v1/history/get_key_accounts',
     getControlledAccounts: '/v1/history/get_controlled_accounts',
+    getProducers: '/v1/chain/get_producers',
 };
 /**
  * 配置,只需要chainId，其他的配置都不需要
@@ -83,6 +84,8 @@ function getAccount(account) {
     let ret = post(data, urls.getAccount);
     return JSON.parse(ret.getBody('utf-8'));
 }
+
+
 
 /**
  * 替换
@@ -702,6 +705,20 @@ async function regproxy(privateKey, proxy, isproxy) {
     console.log("voteproducer result : ", JSON.stringify(processedTransaction));
 }
 
+/**
+ * 超级节点查找
+ * @param isJson:返回格式是否为json
+ * @param lower_bound: 指定起始查询的超级节点账户，为""则从头开始返回
+ * @param limit：限制一次查询返回多少条，有上限，超过无效？？
+ */
+async function getProducers(isJson, lower_bound, limit) {
+    let data = {json: isJson,
+                lower_bound: lower_bound,
+                limit:limit
+                };
+    let ret = post(data, urls.getProducers);
+    return JSON.parse(ret.getBody('utf-8'));
+}
 
 /**
  * 发送数据
@@ -785,16 +802,19 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 //transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
 
 //let voter = "yyloveuu1314"
-let voter = "chuanhhchuan"
-let proxy =''
-let producers = ['eos42freedom','eoshuobipool']
-voteproducer(prikey, voter, proxy, producers);
+//let voter = "chuanhhchuan"
+//let proxy =''
+//let producers = []
+//let producers = ['eos42freedom','eoshuobipool']
+//let producers = ['eoshuobipool','eos42freedom']
+//voteproducer(prikey, voter, proxy, producers);
 
 //regproxy(prikey, proxy, 1)
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
 
-
+let ret = getProducers( true, "", 50)
+console.log(JSON.stringify(ret));
 // let ret = getTableRows('eosio', 'eosio', 'rammarket');     //ram市场
 // console.log(JSON.stringify(ret));
 
