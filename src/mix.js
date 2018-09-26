@@ -657,17 +657,63 @@ async function deployToken(privateKey, account, supply) {
 /**
  * 查看超级节点
  *
- * @param account 账户名
+ * @param lowerBound 账户名
  * @return {any}
  */
-function getProducers(isJson, lowerBound, limit) {
-    let data = {json: isJson,
+function getProducers(lowerBound, limit) {
+    let data = {json: true,
                 lowerBound: lowerBound,
                 limit:limit};
     let ret = post(data, urls.getProducers);
     return JSON.parse(ret.getBody('utf-8'));
 }
+/**
+ * 投票
+ * @param  voter 账户
+ * @param  proxy 为 '' 表示 voter直投， 如果不为空则为voter授权proxy代理投票，此时producers数组需为空
+ * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoshuobipool']
+ */
+async function vote(privateKey, voter, proxy, producers) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.voteproducer({
+        voter: voter,
+        proxy: proxy,
+        producers: producers
+    });
 
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+}
+
+/**
+ * 注册为代理
+ * @param proxy:account register or unregister for proxy
+ * @param isproxy: 1 for register, 0 for unregister
+ */
+async function regProxy(privateKey, proxy, isproxy) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let nc = await eos.regproxy({
+        proxy: proxy,
+        isproxy: isproxy
+    });
+
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+}
 /**
  * 发送数据
  *
