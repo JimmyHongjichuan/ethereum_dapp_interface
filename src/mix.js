@@ -3,7 +3,7 @@ const ecc = require('eosjs-ecc');
 const request = require('sync-request');
 const binaryen = require('binaryen');
 const fs = require('fs');
-const EosApi = require('eosjs-api')
+
 
 /**
  * 节点列表
@@ -56,7 +56,6 @@ let urls = {
     getTransaction: '/v1/history/get_transaction',
     getKeyAccounts: '/v1/history/get_key_accounts',
     getControlledAccounts: '/v1/history/get_controlled_accounts',
-    getProducers: '/v1/chain/get_producers',
 };
 /**
  * 配置,只需要chainId，其他的配置都不需要
@@ -84,8 +83,6 @@ function getAccount(account) {
     let ret = post(data, urls.getAccount);
     return JSON.parse(ret.getBody('utf-8'));
 }
-
-
 
 /**
  * 替换
@@ -656,70 +653,6 @@ async function deployToken(privateKey, account, supply) {
     });
 }
 
-
-/**
- * 投票
- * @param  voter 直投或委托别人代投的用户账户
- * @param  proxy 为 '' 表示 voter直投， 如果不为空则为voter授权proxy代理投票，此时producers数组需为空
- * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoshuobipool']
- */
-async function voteproducer(privateKey, voter, proxy, producers) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.voteproducer({
-            voter: voter,
-            proxy: proxy,
-            producers: producers
-        });
-
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
-}
-
-/**
- * 注册为代理
- * @param proxy:account register or unregister for proxy
- * @param isproxy: 1 for register, 0 for unregister
- */
-async function regproxy(privateKey, proxy, isproxy) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.regproxy({
-        proxy: proxy,
-        isproxy: isproxy
-    });
-
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
-}
-
-/**
- * 超级节点查找
- * @param isJson:返回格式是否为json
- * @param lower_bound: 指定起始查询的超级节点账户，为""则从头开始返回
- * @param limit：限制一次查询返回多少条，有上限，超过无效？？
- */
-async function getProducers(isJson, lower_bound, limit) {
-    let data = {json: isJson,
-                lower_bound: lower_bound,
-                limit:limit
-                };
-    let ret = post(data, urls.getProducers);
-    return JSON.parse(ret.getBody('utf-8'));
-}
-
 /**
  * 发送数据
  *
@@ -758,7 +691,7 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxx';
+let prikey = 'xxxxxx';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -796,25 +729,16 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // console.log(ret.actions.length);
 // console.log(JSON.stringify(ret));
 
-// transfer(prikey, 'eosio.token', 'hongyuanyang', 'yyloveuu1314', '0.6000 EOS', '');
+// transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-//transfer('xxx', 'zhaoguosuker', 'zhaoguosuker', 'ha3tcnrygqge', '1000000.0000 EOS', '发财啦');
+// transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
 
-//let voter = "yyloveuu1314"
-//let voter = "chuanhhchuan"
-//let proxy =''
-//let producers = []
-//let producers = ['eos42freedom','eoshuobipool']
-//let producers = ['eoshuobipool','eos42freedom']
-//voteproducer(prikey, voter, proxy, producers);
 
-//regproxy(prikey, proxy, 1)
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
 
-let ret = getProducers( true, "", 50)
-console.log(JSON.stringify(ret));
+
 // let ret = getTableRows('eosio', 'eosio', 'rammarket');     //ram市场
 // console.log(JSON.stringify(ret));
 
