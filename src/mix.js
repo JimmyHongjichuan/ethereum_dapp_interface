@@ -35,7 +35,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[1];
+let curNode = nodes[2];
 /**
  * eos 请求路径
  */
@@ -665,7 +665,7 @@ async function deployToken(privateKey, account, supply) {
 function getProducers(lowerBound, limit) {
     let data = {
         json: true,
-        lowerBound: lowerBound,
+        lower_bound: lowerBound,
         limit: limit
     };
     let ret = post(data, urls.getProducers);
@@ -763,8 +763,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
-let ret = getProducers(true, "", 1);
-console.log(ret);
+
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
 
@@ -814,3 +813,6 @@ console.log(ret);
 // console.log(ret);
 
 // deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
+
+let ret = getProducers( "eosfishrocks", 4);
+console.log(ret);
