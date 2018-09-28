@@ -13,8 +13,8 @@ let nodes = [
     {
         schema: 'http',
         hostname: 'localhost',
-        port: 9082,
-        prefix: '/eosmix/nodeos',       //http://localhost:9082/eosmix/nodeos
+        port: 8100,
+        prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
     },
     {
         schema: 'https',
@@ -23,9 +23,9 @@ let nodes = [
     },
     {
         schema: 'http',
-        hostname: '172.18.11.52',
-        port: 8888,
-        prefix: '',
+        hostname: '172.18.11.11',
+        port: 8100,
+        prefix: '/eos/nodeos',
     }
 ];
 /**
@@ -371,7 +371,7 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
                         from: from,
                         to: receiver,
                         quantity: amount,
-                        memo: ''
+                        memo: memo
                     }
                 }
             ]
@@ -592,6 +592,7 @@ function prepareHeader() {
  */
 function pushTransaction(transaction) {
     let ret = post(transaction, urls.pushTransaction);
+    console.log(ret);
     return JSON.parse(ret.getBody('utf-8'));
 }
 
@@ -801,6 +802,13 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 // transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
 
+try {
+
+    transfer(prikey, 'eosio.token', 'williamoony1', 'williamoony5', '0.0001 EOS', '。。。。。。');
+} catch (e) {
+    console.log(e);
+}
+
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
@@ -814,5 +822,5 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
 
-let ret = getProducers( "eosfishrocks", 4);
-console.log(ret);
+// let ret = getProducers( "eosfishrocks", 4);
+// console.log(ret);
