@@ -12,9 +12,9 @@ const fs = require('fs');
 let nodes = [
     {
         schema: 'http',
-        hostname: 'localhost',
-        port: 9082,
-        prefix: '/eosmix/nodeos',       //http://localhost:9082/eosmix/nodeos
+        hostname: '172.18.11.11',
+        port: 8100,
+        prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
     },
     {
         schema: 'https',
@@ -23,8 +23,14 @@ let nodes = [
     },
     {
         schema: 'http',
-        hostname: '172.18.11.52',
+        hostname: '172.18.11.38',
         port: 8888,
+        prefix: '',
+    },
+    {
+        schema: 'http',
+        hostname: '127.0.0.1',
+        port: 7777,
         prefix: '',
     }
 ];
@@ -35,7 +41,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[2];
+let curNode = nodes[3];
 /**
  * eos 请求路径
  */
@@ -758,11 +764,11 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxxx';
-let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
+let prikey = '5JtY9WcewDofwgGMSDa94MbddfTkESTqcYSiy6Y29mfBpCqHrB1';
+let pubKey = 'EOS8AwrjdNtJ4kha3sberx4SYvQUGTWW4g6MZdwFrdDeGpmotjZML'
 
-// let ret = getKeyAccounts(pubKey);
-// console.log(ret);
+ let ret = getKeyAccounts(pubKey);
+ console.log(ret);
 
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
@@ -771,17 +777,17 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 // console.log(ret);
 
 
-// transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
+//transferEos(prikey, 'hongyuanyang', 'yyloveuu1314', '0.0001 EOS', '38 server test');
 
 // let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
 // newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
 
-// delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
+//delegatebw(prikey,"hongyuanyang","yyloveuu1314",'1.0000 EOS','0.1000 EOS');
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
-// let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
-// console.log(JSON.stringify(ret));
+ //let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
+ //console.log(JSON.stringify(ret));
 
 
 // let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
@@ -814,5 +820,5 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
 
-let ret = getProducers( "eosfishrocks", 4);
-console.log(ret);
+// ret = getProducers( "eosfishrocks", 1);
+//console.log(ret);
