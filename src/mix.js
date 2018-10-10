@@ -827,6 +827,29 @@ async function hi(privateKey, code, actor, user) {
     console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
+/**
+ * wallet sdk给第三方调用的示例代码
+ */
+// function invokeWallet() {
+//     const account = wallet.account();
+//     const walletEos = wallet.eos();
+//     walletEos.invoke(
+//         {
+//             contract: 'hello',
+//             method: 'hi',
+//             authorization: [{
+//                 actor: account.name,
+//                 permission: account.permission
+//             }],
+//             params: {
+//                 user: 'hi...',
+//             }
+//         }
+//     );
+//
+// }
+
+
 async function issue(privateKey, code, issuer, receiver, amount, memo) {
     let transactionHeaders = prepareHeader();
     let eos = Eos({
