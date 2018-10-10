@@ -26,6 +26,12 @@ let nodes = [
         hostname: '172.18.11.11',
         port: 8100,
         prefix: '/eos/nodeos',
+    },
+    {
+        schema: 'http',
+        hostname: '127.0.0.1',
+        port: 7777,
+        prefix: '',
     }
 ];
 /**
@@ -35,7 +41,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[2];
+let curNode = nodes[3];
 /**
  * eos 请求路径
  */
@@ -64,7 +70,7 @@ let urls = {
  * @type {{chainId: string, keyProvider: string[], expireInSeconds: number, broadcast: boolean, verbose: boolean, sign: boolean}}
  */
 let config = {
-    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+    chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
     keyProvider: ['xxxxxxx'],        //私钥
     httpEndpoint: null,
     expireInSeconds: 60,
@@ -273,8 +279,6 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
     let eos = Eos({
         chainId: config.chainId,
         keyProvider: privateKey,
-        // httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
-        // httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
         httpEndpoint: null,
         transactionHeaders
     });
@@ -621,7 +625,7 @@ function getBlock(blockNumberOrId) {
  * @param account 合约账户
  * @return {any}
  */
-function getAbi(account) {
+function fetchAbi(account) {
     let data = {account_name: account};
     let ret = post(data, urls.getAbi);
     return JSON.parse(ret.getBody('utf-8'));
@@ -758,7 +762,8 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = 'xxxxxx';
+//let prikey = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+let prikey = '5J9Qi63kHUjie6Yx4iJNb2H1wNT9GTDCj6tpEa41UuLxB4mfno6';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // let ret = getKeyAccounts(pubKey);
@@ -800,14 +805,14 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 // transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
-
+/*
 try {
 
     transfer(prikey, 'eosio.token', 'williamoony1', 'williamoony5', '0.0001 EOS', '。。。。。。');
 } catch (e) {
     console.log(e);
 }
-
+*/
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
@@ -823,3 +828,91 @@ try {
 
 // let ret = getProducers( "eosfishrocks", 4);
 // console.log(ret);
+
+async function hi(privateKey, code, actor, user) {
+    let transactionHeaders = prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let abi = fetchAbi(code);
+    let abi_json = abi.abi;
+    await eos.fc.abiCache.abi(code, abi_json);
+
+    let nc = await eos.transaction(
+        {
+            actions: [
+                {
+                    account: code,
+                    name: 'hi',
+                    authorization: [{
+                        actor: actor,
+                        permission: 'active'
+                    }],
+                    data: {
+                        user: user,
+                    }
+                }
+            ]
+        }
+    );
+
+    //another implement, also OK!
+    //let contract = await eos.contract('yy');
+    //let nc = await contract.hi('yy',{  authorization: 'yy' });
+
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+async function issue(privateKey, code,issuer, receiver, amount, memo) {
+    let transactionHeaders = prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+         httpEndpoint: null,
+        transactionHeaders
+    });
+    let abi = fetchAbi(code);
+    let abi_json = abi.abi;
+    await eos.fc.abiCache.abi(code,abi_json);
+    let nc = await eos.transaction(
+        {
+            actions: [
+                {
+                    account: code,
+                    name: 'issue',
+                    authorization: [{
+                        actor: issuer,
+                        permission: 'active'
+                    }],
+                    data: {
+                        to: receiver,
+                        quantity: amount,
+                        memo: memo
+                    }
+                }
+            ]
+        }
+    );
+
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+/*
+try {
+    issue(prikey, "uu", "uu", "yy","900000.0000 SYS", "dispatch to yy");
+} catch (e) {
+    console.log(e);//
+}
+*/
+try {
+    hi(prikey, "yy", "yy", "yy");
+} catch (e) {
+    console.log(e);//
+}
