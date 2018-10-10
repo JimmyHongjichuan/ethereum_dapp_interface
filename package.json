@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "eosjs": "^16.0.6",
+    "eosjs": "^16.0.9",
     "sync-request": "^6.0.0",
     "binaryen": "latest"
   }
