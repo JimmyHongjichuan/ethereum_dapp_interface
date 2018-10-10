@@ -12,7 +12,7 @@ const fs = require('fs');
 let nodes = [
     {
         schema: 'http',
-        hostname: '172.18.11.11',
+        hostname: 'localhost',
         port: 8100,
         prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
     },
@@ -23,15 +23,9 @@ let nodes = [
     },
     {
         schema: 'http',
-        hostname: '172.18.11.38',
-        port: 8888,
-        prefix: '',
-    },
-    {
-        schema: 'http',
-        hostname: '127.0.0.1',
-        port: 7777,
-        prefix: '',
+        hostname: '172.18.11.11',
+        port: 8100,
+        prefix: '/eos/nodeos',
     }
 ];
 /**
@@ -41,7 +35,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[3];
+let curNode = nodes[2];
 /**
  * eos 请求路径
  */
@@ -764,11 +758,11 @@ function randomKey() {
 
 //randomKey();
 
-let prikey = '5JtY9WcewDofwgGMSDa94MbddfTkESTqcYSiy6Y29mfBpCqHrB1';
-let pubKey = 'EOS8AwrjdNtJ4kha3sberx4SYvQUGTWW4g6MZdwFrdDeGpmotjZML'
+let prikey = 'xxxxxx';
+let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
- let ret = getKeyAccounts(pubKey);
- console.log(ret);
+// let ret = getKeyAccounts(pubKey);
+// console.log(ret);
 
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
@@ -777,17 +771,17 @@ let pubKey = 'EOS8AwrjdNtJ4kha3sberx4SYvQUGTWW4g6MZdwFrdDeGpmotjZML'
 // console.log(ret);
 
 
-//transferEos(prikey, 'hongyuanyang', 'yyloveuu1314', '0.0001 EOS', '38 server test');
+// transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
 // let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
 // newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
 
-//delegatebw(prikey,"hongyuanyang","yyloveuu1314",'1.0000 EOS','0.1000 EOS');
+// delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
- //let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
- //console.log(JSON.stringify(ret));
+// let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
+// console.log(JSON.stringify(ret));
 
 
 // let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
@@ -807,6 +801,13 @@ let pubKey = 'EOS8AwrjdNtJ4kha3sberx4SYvQUGTWW4g6MZdwFrdDeGpmotjZML'
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 // transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
 
+try {
+
+    transfer(prikey, 'eosio.token', 'williamoony1', 'williamoony5', '0.0001 EOS', '。。。。。。');
+} catch (e) {
+    console.log(e);
+}
+
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
@@ -820,5 +821,5 @@ let pubKey = 'EOS8AwrjdNtJ4kha3sberx4SYvQUGTWW4g6MZdwFrdDeGpmotjZML'
 
 // deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
 
-// ret = getProducers( "eosfishrocks", 1);
-//console.log(ret);
+// let ret = getProducers( "eosfishrocks", 4);
+// console.log(ret);
