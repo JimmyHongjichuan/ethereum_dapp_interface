@@ -41,7 +41,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[3];
+let curNode = nodes[1];
 /**
  * eos 请求路径
  */
@@ -70,8 +70,8 @@ let urls = {
  * @type {{chainId: string, keyProvider: string[], expireInSeconds: number, broadcast: boolean, verbose: boolean, sign: boolean}}
  */
 let config = {
-    chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
-    //chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+    //chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
+    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
     keyProvider: ['xxxxxxx'],        //私钥
     httpEndpoint: null,
     expireInSeconds: 60,
@@ -781,6 +781,14 @@ function randomKey() {
 }
 
 /**
+ * 公钥
+ * @param privateKey
+ */
+function publicKey(privateKey) {
+   let  pub= ecc.privateToPublic(privateKey);
+   return pub;
+}
+/**
  *
  * @param privateKey 私钥
  * @param code 合约账户
@@ -829,6 +837,7 @@ async function hi(privateKey, code, actor, user) {
 
 /**
  * wallet sdk给第三方调用的示例代码
+ * dapp的代码
  */
 // function invokeWallet() {
 //     const account = wallet.account();
@@ -844,7 +853,9 @@ async function hi(privateKey, code, actor, user) {
 //             params: {
 //                 user: 'hi...',
 //             }
-//         }
+//         }，{
+//             ......
+//           }
 //     );
 //
 // }
@@ -890,8 +901,8 @@ async function issue(privateKey, code, issuer, receiver, amount, memo) {
 //randomKey();
 
 //let prikey = 'xxxxxx';
-let prikey = 'xxxxx';
-let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
+let prikey = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
+let pubKey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
@@ -932,14 +943,13 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a'
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 // transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
-/*
-try {
 
-    transfer(prikey, 'eosio.token', 'williamoony1', 'williamoony5', '0.0001 EOS', '。。。。。。');
-} catch (e) {
-    console.log(e);
-}
-*/
+let pub= publicKey(prikey);
+console.log(JSON.stringify(pub));
+let ret=getKeyAccounts(pub);
+console.log(JSON.stringify(ret));
+
+
 
 // let ret = getAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
@@ -953,7 +963,7 @@ try {
 
 // deployToken('xxxxxxx', 'williamoony1', '1000000000.0000 EOS');
 
-// let ret = getProducers( "eosfishrocks", 4);
+// let ret = getProducers( '', 400000);
 // console.log(ret);
 
 
@@ -964,8 +974,13 @@ try {
     console.log(e);//
 }
 */
-try {
-    hi(prikey, "yy", "yy", "yy");
-} catch (e) {
-    console.log(e);//
-}
+// try {
+//     hi(prikey, "yy", "yy", "yy");
+// } catch (e) {
+//     console.log(e);//
+// }
+
+
+// let a=493982311578988672;
+// let sum=21963377804753862656.000;
+// console.log(a/sum);
