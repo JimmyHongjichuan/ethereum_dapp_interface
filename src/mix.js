@@ -58,6 +58,7 @@ let urls = {
     pushTransaction: '/v1/chain/push_transaction',   //推送transaction
     getRequiredKeys: '/v1/chain/get_required_keys',
     getCurrencyStats: '/v1/chain/get_currency_stats',
+    getCurrencyBalance: '/v1/chain/get_currency_balance',
     getActions: '/v1/history/get_actions',
     getTransaction: '/v1/history/get_transaction',
     getKeyAccounts: '/v1/history/get_key_accounts',
@@ -197,7 +198,7 @@ function getKeyAccounts(publicKey) {
  */
 function getCurrencyBalance(code, account, symbol) {
     let data = {code: code, account: account, symbol: symbol};
-    let ret = post(data, urls.getBalance);
+    let ret = post(data, urls.getCurrencyBalance);
     return JSON.parse(ret.getBody('utf-8'));
 }
 
@@ -1019,8 +1020,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
 
-// let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
-// console.log(ret);
+let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
+console.log(ret);
 
 
 // let ret = getTableRows('williamoony5', 'eosio', 'userres');//获取资源情况
