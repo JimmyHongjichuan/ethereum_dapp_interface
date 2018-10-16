@@ -485,11 +485,12 @@ async function delegatebw(privateKey, from, receiver, cpu, net) {
  * 赎回
  *
  * @param privateKey 私钥
- * @param account 账户,接收者也是此账户
+ * @param account  赎回账户
+ * @param receiver 接收账户
  * @param cpu cpu（eos）
  * @param net net（eos）
  */
-async function undelegatebw(privateKey, account, cpu, net) {
+async function undelegatebw(privateKey, account, receiver, cpu, net) {
     let transactionHeaders = await prepareHeader();
     let eos = Eos({
         chainId: config.chainId,
@@ -500,7 +501,7 @@ async function undelegatebw(privateKey, account, cpu, net) {
     let nc = await eos.transaction(tr => {
         tr.undelegatebw({
             from: account,
-            receiver: account,
+            receiver: receiver,
             unstake_net_quantity: net,
             unstake_cpu_quantity: cpu
         });
@@ -1025,8 +1026,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // let ret = getTableRows('williamoony5', 'eosio', 'userres');//获取资源情况
 // console.log(ret);
 
-let ret = userres('williamoony5');
-console.log(ret);
+// let ret = userres('williamoony5');
+// console.log(ret);
 
 // let ret = delband('williamoony5');
 // console.log(ret);
