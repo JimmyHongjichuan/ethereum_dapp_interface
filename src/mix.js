@@ -52,7 +52,7 @@ let urls = {
     getAbi: '/v1/chain/get_abi',
     getCode: '/v1/chain/get_code',
     getTableRow: '/v1/chain/get_table_rows',
-    getBalance: '/v1/chain/get_currency_balance',
+
     jsonToBin: '/v1/chain/abi_json_to_bin',
     binToJson: '/v1/chain/abi_bin_to_json',
     pushTransaction: '/v1/chain/push_transaction',   //推送transaction
@@ -213,6 +213,24 @@ function getTableRows(scope, code, table) {
     let data = {scope: scope, code: code, table: table, json: true};
     let ret = post(data, urls.getTableRow);
     return JSON.parse(ret.getBody('utf-8'));
+}
+
+/**
+ * 抵押详情
+ * @param account 账户
+ * @return {any}
+ */
+function delband(account) {
+    return getTableRows(account, "eosio", "delband");
+}
+
+/**
+ * 资源详情
+ * @param account 账户
+ * @return {any}
+ */
+function userres(account) {
+    return getTableRows(account, "eosio", "userres");
 }
 
 /**
@@ -661,6 +679,27 @@ async function deployToken(privateKey, account, supply) {
 }
 
 /**
+ * 部署合约
+ * @param privateKey 私钥
+ * @param account 私钥对应的账户
+ * @param wasm wasm
+ * @param abi abi
+ */
+async function deployContract(privateKey, account, wasm, abi) {
+    let transactionHeaders = await prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        //binaryen: binaryen,
+        httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+        //httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
+        transactionHeaders
+    });
+    await eos.setcode(account, 0, 0, wasm);
+    await eos.setabi(account, JSON.parse(abi));
+}
+
+/**
  * 获取eos对象（准备好私钥和合约的eos对象）
  * @param privateKey 签名用的私钥
  * @param account 合约账户
@@ -785,9 +824,10 @@ function randomKey() {
  * @param privateKey
  */
 function publicKey(privateKey) {
-   let  pub= ecc.privateToPublic(privateKey);
-   return pub;
+    let pub = ecc.privateToPublic(privateKey);
+    return pub;
 }
+
 /**
  *
  * @param privateKey 私钥
@@ -833,6 +873,77 @@ async function hi(privateKey, code, actor, user) {
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
     console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+/**
+ * ping 函数调用
+ * @param privateKey 私钥
+ * @param code 合约
+ * @param actor 私钥对应的账户
+ * @return {Promise<void>}
+ */
+async function ping(privateKey, code, actor) {
+    let transactionHeaders = prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let abi = fetchAbi(code);
+    let abi_json = abi.abi;
+    await eos.fc.abiCache.abi(code, abi_json);
+
+    let nc = await eos.transaction(
+        {
+            actions: [
+                {
+                    account: code,
+                    name: 'ping',
+                    authorization: [{
+                        actor: actor,
+                        permission: 'active'
+                    }],
+                    data: {}
+                }
+            ]
+        }
+    );
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("ping result : ", JSON.stringify(processedTransaction));
+}
+
+async function erase(privateKey, code, actor) {
+    let transactionHeaders = prepareHeader();
+    let eos = Eos({
+        chainId: config.chainId,
+        keyProvider: privateKey,
+        httpEndpoint: null,
+        transactionHeaders
+    });
+    let abi = fetchAbi(code);
+    let abi_json = abi.abi;
+    await eos.fc.abiCache.abi(code, abi_json);
+
+    let nc = await eos.transaction(
+        {
+            actions: [
+                {
+                    account: code,
+                    name: 'erase',
+                    authorization: [{
+                        actor: actor,
+                        permission: 'active'
+                    }],
+                    data: {}
+                }
+            ]
+        }
+    );
+    let transaction = nc.transaction;
+    let processedTransaction = pushTransaction(transaction);
+    console.log("erase result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -901,8 +1012,8 @@ async function issue(privateKey, code, issuer, receiver, amount, memo) {
 //randomKey();
 
 //let prikey = 'xxxxxx';
-let prikey = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
-let pubKey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
+let prikey = 'xxx';
+let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
@@ -910,9 +1021,15 @@ let pubKey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
 // let ret = getCurrencyBalance('williamoony1', 'williamoony1', 'EOS');//获取代币持有情况
 // console.log(ret);
 
+
 // let ret = getTableRows('williamoony5', 'eosio', 'userres');//获取资源情况
 // console.log(ret);
 
+let ret = userres('williamoony5');
+console.log(ret);
+
+// let ret = delband('williamoony5');
+// console.log(ret);
 
 // transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
@@ -942,13 +1059,12 @@ let pubKey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
 // transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony2', '0.1000 EOS', '测试转账');
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-// transfer('xxx', 'zhaoguosuker', 'ha3tcnrygqge', 'romeverli333', '10000.0000 EOS', '发钱啦');
+// transfer(prikey, 'williamoony1', 'williamoony1', 'hongyuanyang', '10000.0000 EOS', '发钱啦');
 
-let pub= publicKey(prikey);
-console.log(JSON.stringify(pub));
-let ret=getKeyAccounts(pub);
-console.log(JSON.stringify(ret));
-
+// let pub= publicKey(prikey);
+// console.log(JSON.stringify(pub));
+// let ret=getKeyAccounts(pub);
+// console.log(JSON.stringify(ret));
 
 
 // let ret = getAbi('everipediaiq');
@@ -981,6 +1097,15 @@ try {
 // }
 
 
-// let a=493982311578988672;
-// let sum=21963377804753862656.000;
-// console.log(a/sum);
+// prikey='xxx';
+// let wasm = fs.readFileSync(`./eosdayeosday.wasm`);
+// let abi = fs.readFileSync(`./eosdayeosday.abi`);
+// try{
+//     deployContract(prikey,"williamoony5",wasm,abi);
+// }catch (e) {
+//     console.log(e);
+// }
+
+
+// prikey='xxx';
+// erase(prikey,'williamoony5','williamoony5');
