@@ -3,7 +3,8 @@ const ecc = require('eosjs-ecc');
 const request = require('sync-request');
 const binaryen = require('binaryen');
 const fs = require('fs');
-
+const BigNumber = require('bignumber.js');
+const Format = require('../node_modules/eosjs/lib/format');
 
 /**
  * 节点列表
@@ -217,8 +218,13 @@ function getCurrencyBalance(code, account, symbol) {
  * @return {any}
  */
 function getTableRows(scope, code, table) {
-    let data = {scope: scope, code: code, table: table, json: true};
-    let ret = post(data, urls.getTableRow);
+    let ret = null;
+    if (arguments.length <= 1) {
+        ret = post(scope, urls.getTableRow);
+    } else {
+        let data = {scope: scope, code: code, table: table, json: true};
+        ret = post(data, urls.getTableRow);
+    }
     return JSON.parse(ret.getBody('utf-8'));
 }
 
@@ -1090,7 +1096,7 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // let ret = ramPrice(1);
 // console.log(ret);
 
- // deployToken('xxx', 'williamoony5', '1000000000.0000 EOS');
+// deployToken('xxx', 'williamoony5', '1000000000.0000 EOS');
 
 // let ret = getProducers( '', 400000);
 // console.log(ret);
@@ -1136,3 +1142,17 @@ try {
 
 // prikey='xxx';
 // erase(prikey,'williamoony5','williamoony5');
+
+
+const table_key = new BigNumber(Format.encodeName('williamoony1', false));
+let params = {
+    "code": "williamoony5",
+    "scope": "williamoony5",
+    "table": "playertable",
+    "json": true,
+    "lower_bound": table_key.toString(),
+    "upper_bound": table_key.plus(1).toString(),
+    "limit": 1111
+};
+let ret = getTableRows(params);
+console.log(JSON.stringify(ret));

@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "bignumber": "^1.1.0",
+    "bignumber.js": "^7.2.1",
+    "binaryen": "latest",
     "eosjs": "^16.0.9",
-    "sync-request": "^6.0.0",
-    "binaryen": "latest"
+    "sync-request": "^6.0.0"
   }
 }
