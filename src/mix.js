@@ -1021,7 +1021,7 @@ async function issue(privateKey, code, issuer, receiver, amount, memo) {
     console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
-
+//随机一个私钥
 //randomKey();
 
 //let prikey = 'xxxxxx';
@@ -1144,15 +1144,37 @@ try {
 // erase(prikey,'williamoony5','williamoony5');
 
 
-const table_key = new BigNumber(Format.encodeName('williamoony1', false));
-let params = {
-    "code": "williamoony5",
-    "scope": "williamoony5",
-    "table": "playertable",
-    "json": true,
-    "lower_bound": table_key.toString(),
-    "upper_bound": table_key.plus(1).toString(),
-    "limit": 1111
-};
-let ret = getTableRows(params);
-console.log(JSON.stringify(ret));
+//合约的数据库访问
+// let table_key = new BigNumber(Format.encodeName('williamoony1', false));
+// let params = {
+//     "code": "williamoony5",
+//     "scope": "williamoony5",
+//     "table": "playertable",
+//     "json": true,
+//     "lower_bound": table_key.toString(),
+//     "upper_bound": table_key.plus(1).toString(),
+//     "limit": 1111
+// };
+//
+// table_key = new BigNumber(Format.encodeName('williamoony1', false));
+// params = {
+//     "code": "williamoony5",
+//     "scope": "williamoony5",
+//     "table": "userbalance",
+//     "json": true,
+//     "lower_bound": 0,
+//     "upper_bound": -1,
+//     "limit": 1111
+// };
+// table_key = new BigNumber(Format.encodeName('williamoony1', false));
+// params = {
+//     "code": "williamoony5",
+//     "scope": "williamoony5",
+//     "table": "counter",
+//     "json": true,
+//     "lower_bound": 0,
+//     "upper_bound": -1,
+//     "limit": 1111
+// };
+// let ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
