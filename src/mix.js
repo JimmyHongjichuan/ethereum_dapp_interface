@@ -1025,7 +1025,7 @@ async function issue(privateKey, code, issuer, receiver, amount, memo) {
 //randomKey();
 
 //let prikey = 'xxxxxx';
-let prikey = 'xxx';
+//let prikey = '5KkhVZZwNF4Eoe8t11zyve88TBAL9ooAw5a9sJ76TqNTs1sWLx7';
 let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 
 // let ret = getKeyAccounts(pubKey);
@@ -1035,8 +1035,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // console.log(ret);
 
 
- let ret = getTableRows('yyloveuu1314', 'eosio', 'userres');//获取资源情况
- console.log(ret);
+// let ret = getTableRows('yyloveuu1314', 'eosio', 'userres');//获取资源情况
+// console.log(ret);
 
 // let ret = userres('williamoony5');
 // console.log(ret);
@@ -1050,9 +1050,11 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
 
 // delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
-
-//undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
-
+/*try {
+    undelegatebw(prikey,'zhaoguosuker','zhaoguosuker','0.1000 EOS','0.1000 EOS');
+} catch (e) {
+        console.log(e);
+ }*/
 // let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
 // console.log(JSON.stringify(ret));
 
@@ -1069,13 +1071,13 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // console.log(ret.actions.length);
 // console.log(JSON.stringify(ret));
 
-// prikey = 'xxxxx';
-// try {
-//     //transfer(prikey, 'williamoony1', 'williamoony1', 'williamoony5', '0.0001 EOS', '取钱');
-//     transferEos(prikey,'williamoony1','williamoony5','0.0001 EOS','取钱');//gy4temjrhage
-// } catch (e) {
-//     console.log(e);
-// }
+ prikey = 'xxxx';
+ try {
+    //transfer(prikey, 'williamoony1', 'williamoony1', 'williamoony5', '0.0001 EOS', '取钱');
+    transferEos(prikey,'hongyuanyang','yyloveuu1314','3.0000 EOS','3 EOS for account');//gy4temjrhage
+} catch (e) {
+    console.log(e);
+}
 
 // transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
 // transfer(prikey, 'williamoony1', 'williamoony1', 'hongyuanyang', '10000.0000 EOS', '发钱啦');
