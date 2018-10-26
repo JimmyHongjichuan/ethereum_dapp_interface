@@ -15,7 +15,7 @@ let nodes = [
         schema: 'http',
         hostname: 'localhost',
         port: 8100,
-        prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
+        prefix: '/eosapi/nodeos',       //http://localhost:9082/eosmix/nodeos
     },
     {
         schema: 'https',
@@ -26,7 +26,7 @@ let nodes = [
         schema: 'http',
         hostname: '172.18.11.11',
         port: 8100,
-        prefix: '/eos/nodeos',
+        prefix: '/eosapi/nodeos',
     },
     {
         schema: 'http',
@@ -48,7 +48,7 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[1];
+let curNode = nodes[2];
 /**
  * eos 请求路径
  */
@@ -1035,8 +1035,8 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // console.log(ret);
 
 
-// let ret = getTableRows('williamoony5', 'eosio', 'userres');//获取资源情况
-// console.log(ret);
+ let ret = getTableRows('yyloveuu1314', 'eosio', 'userres');//获取资源情况
+ console.log(ret);
 
 // let ret = userres('williamoony5');
 // console.log(ret);
