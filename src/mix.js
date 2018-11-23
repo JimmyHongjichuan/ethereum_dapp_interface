@@ -11,35 +11,41 @@ const Format = require('../node_modules/eosjs/lib/format');
  * @type {*[]}
  */
 let nodes = [
-    {
-        schema: 'http',
-        hostname: 'localhost',
-        port: 8100,
-        prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
-    },
-    {
-        schema: 'https',
-        hostname: 'api1.eosasia.one',
-        prefix: '',
-    },
-    {
-        schema: 'http',
-        hostname: '172.18.11.11',
-        port: 8100,
-        prefix: '/eos/nodeos',
-    },
-    {
-        schema: 'http',
-        hostname: '172.18.11.52',
-        port: 8888,
-        prefix: '',
-    },
-    {
-        schema: 'http',
-        hostname: '127.0.0.1',
-        port: 7777,
-        prefix: '',
-    }
+  {
+    schema: 'http',
+    hostname: '172.18.11.11',
+    port: 7777,
+    prefix: '',       //私链
+  },
+  {
+    schema: 'http',
+    hostname: 'localhost',
+    port: 8100,
+    prefix: '/eos/nodeos',       //http://localhost:9082/eosmix/nodeos
+  },
+  {
+    schema: 'https',
+    hostname: 'api1.eosasia.one',
+    prefix: '',
+  },
+  {
+    schema: 'http',
+    hostname: '172.18.11.11',
+    port: 8100,
+    prefix: '/eosapi/nodeos',
+  },
+  {
+    schema: 'http',
+    hostname: 'wallet-dev-02.sinnet.huobiidc.com',        // 测试环境
+    port: 80,
+    prefix: '/eosapi/nodeos',
+  },
+  {
+    schema: 'http',
+    hostname: '127.0.0.1',
+    port: 7777,
+    prefix: '',
+  }
 ];
 /**
  * 当前使用的节点
@@ -48,29 +54,29 @@ let nodes = [
  *
  * @type {number}
  */
-let curNode = nodes[1];
+let curNode = nodes[0];
 /**
  * eos 请求路径
  */
 let urls = {
-    getInfo: '/v1/chain/get_info',
-    getBlock: '/v1/chain/get_block',
-    getAccount: '/v1/chain/get_account',
-    getAbi: '/v1/chain/get_abi',
-    getCode: '/v1/chain/get_code',
-    getTableRow: '/v1/chain/get_table_rows',
+  getInfo: '/v1/chain/get_info',
+  getBlock: '/v1/chain/get_block',
+  getAccount: '/v1/chain/get_account',
+  getAbi: '/v1/chain/get_abi',
+  getCode: '/v1/chain/get_code',
+  getTableRow: '/v1/chain/get_table_rows',
 
-    jsonToBin: '/v1/chain/abi_json_to_bin',
-    binToJson: '/v1/chain/abi_bin_to_json',
-    pushTransaction: '/v1/chain/push_transaction',   //推送transaction
-    getRequiredKeys: '/v1/chain/get_required_keys',
-    getCurrencyStats: '/v1/chain/get_currency_stats',
-    getCurrencyBalance: '/v1/chain/get_currency_balance',
-    getActions: '/v1/history/get_actions',
-    getTransaction: '/v1/history/get_transaction',
-    getKeyAccounts: '/v1/history/get_key_accounts',
-    getControlledAccounts: '/v1/history/get_controlled_accounts',
-    getProducers: '/v1/chain/get_producers',
+  jsonToBin: '/v1/chain/abi_json_to_bin',
+  binToJson: '/v1/chain/abi_bin_to_json',
+  pushTransaction: '/v1/chain/push_transaction',   //推送transaction
+  getRequiredKeys: '/v1/chain/get_required_keys',
+  getCurrencyStats: '/v1/chain/get_currency_stats',
+  getCurrencyBalance: '/v1/chain/get_currency_balance',
+  getActions: '/v1/history/get_actions',
+  getTransaction: '/v1/history/get_transaction',
+  getKeyAccounts: '/v1/history/get_key_accounts',
+  getControlledAccounts: '/v1/history/get_controlled_accounts',
+  getProducers: '/v1/chain/get_producers',
 };
 /**
  * 配置,只需要chainId，其他的配置都不需要
@@ -78,14 +84,14 @@ let urls = {
  * @type {{chainId: string, keyProvider: string[], expireInSeconds: number, broadcast: boolean, verbose: boolean, sign: boolean}}
  */
 let config = {
-    //chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
-    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-    keyProvider: ['xxxxxxx'],        //私钥
-    httpEndpoint: null,
-    expireInSeconds: 60,
-    broadcast: false,
-    verbose: false, // API activity
-    sign: true
+  chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
+  //chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+  keyProvider: ['xxxxxxx'],        //私钥
+  httpEndpoint: null,
+  expireInSeconds: 60,
+  broadcast: false,
+  verbose: false, // API activity
+  sign: true
 };
 
 /**
@@ -95,9 +101,9 @@ let config = {
  * @return {any}
  */
 function getAccount(account) {
-    let data = {account_name: account};
-    let ret = post(data, urls.getAccount);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {account_name: account};
+  let ret = post(data, urls.getAccount);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -136,23 +142,23 @@ function getAccount(account) {
  * @return {any}
  */
 function newPermissions(account, owner, active) {
-    const perms = JSON.parse(JSON.stringify(account.permissions));// clone
-    for (const perm of perms) {
-        if (perm.perm_name === 'owner') {   //owner
-            if (owner) {
-                for (const key of perm.required_auth.keys) {
-                    key.key = owner;
-                }
-            }
-        } else if (perm.perm_name === 'active') {   //active
-            if (active) {
-                for (const key of perm.required_auth.keys) {
-                    key.key = active;
-                }
-            }
+  const perms = JSON.parse(JSON.stringify(account.permissions));// clone
+  for (const perm of perms) {
+    if (perm.perm_name === 'owner') {   //owner
+      if (owner) {
+        for (const key of perm.required_auth.keys) {
+          key.key = owner;
         }
+      }
+    } else if (perm.perm_name === 'active') {   //active
+      if (active) {
+        for (const key of perm.required_auth.keys) {
+          key.key = active;
+        }
+      }
     }
-    return perms;
+  }
+  return perms;
 }
 
 /**
@@ -162,26 +168,26 @@ function newPermissions(account, owner, active) {
  * @param perms perms
  */
 async function updateAuth(privateKey, account, perms) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.transaction(tr => {
-        for (const perm of perms) {
-            tr.updateauth({
-                account: account,
-                permission: perm.perm_name,
-                parent: perm.parent,
-                auth: perm.required_auth
-            }, {authorization: `${account}@owner`})
-        }
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("updateAuth result : ", JSON.stringify(processedTransaction));
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    for (const perm of perms) {
+      tr.updateauth({
+        account: account,
+        permission: perm.perm_name,
+        parent: perm.parent,
+        auth: perm.required_auth
+      }, {authorization: `${account}@owner`})
+    }
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("updateAuth result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -191,9 +197,9 @@ async function updateAuth(privateKey, account, perms) {
  * @return {any}
  */
 function getKeyAccounts(publicKey) {
-    let data = {public_key: publicKey};
-    let ret = post(data, urls.getKeyAccounts);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {public_key: publicKey};
+  let ret = post(data, urls.getKeyAccounts);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -204,9 +210,9 @@ function getKeyAccounts(publicKey) {
  * @param symbol
  */
 function getCurrencyBalance(code, account, symbol) {
-    let data = {code: code, account: account, symbol: symbol};
-    let ret = post(data, urls.getCurrencyBalance);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {code: code, account: account, symbol: symbol};
+  let ret = post(data, urls.getCurrencyBalance);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -218,14 +224,14 @@ function getCurrencyBalance(code, account, symbol) {
  * @return {any}
  */
 function getTableRows(scope, code, table) {
-    let ret = null;
-    if (arguments.length <= 1) {
-        ret = post(scope, urls.getTableRow);
-    } else {
-        let data = {scope: scope, code: code, table: table, json: true};
-        ret = post(data, urls.getTableRow);
-    }
-    return JSON.parse(ret.getBody('utf-8'));
+  let ret = null;
+  if (arguments.length <= 1) {
+    ret = post(scope, urls.getTableRow);
+  } else {
+    let data = {scope: scope, code: code, table: table, json: true};
+    ret = post(data, urls.getTableRow);
+  }
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -234,7 +240,7 @@ function getTableRows(scope, code, table) {
  * @return {any}
  */
 function delband(account) {
-    return getTableRows(account, "eosio", "delband");
+  return getTableRows(account, "eosio", "delband");
 }
 
 /**
@@ -243,7 +249,7 @@ function delband(account) {
  * @return {any}
  */
 function userres(account) {
-    return getTableRows(account, "eosio", "userres");
+  return getTableRows(account, "eosio", "userres");
 }
 
 /**
@@ -252,13 +258,13 @@ function userres(account) {
  * @param ram 内存（单位kb）
  */
 function ramPrice(ram) {
-    let ret = getTableRows('eosio', 'eosio', 'rammarket');
-    let row = ret.rows[0];
-    let quote = row.quote.balance;
-    quote = quote.substr(0, quote.length - 3).trim();
-    let base = row.base.balance;
-    base = base.substr(0, base.length - 3).trim();
-    return (ram * parseFloat(quote)) / (ram + parseFloat(base) / 1024);
+  let ret = getTableRows('eosio', 'eosio', 'rammarket');
+  let row = ret.rows[0];
+  let quote = row.quote.balance;
+  quote = quote.substr(0, quote.length - 3).trim();
+  let base = row.base.balance;
+  base = base.substr(0, base.length - 3).trim();
+  return (ram * parseFloat(quote)) / (ram + parseFloat(base) / 1024);
 }
 
 /**
@@ -269,9 +275,9 @@ function ramPrice(ram) {
  * @param offset offset 如果pos为-1，offset必须<-1
  */
 function getActions(account, pos, offset) {
-    let data = {account_name: account, pos: pos, offset: offset};
-    let ret = post(data, urls.getActions);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {account_name: account, pos: pos, offset: offset};
+  let ret = post(data, urls.getActions);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -284,16 +290,16 @@ function getActions(account, pos, offset) {
  * @return {Promise<void>}
  */
 async function transferEos(privateKey, from, receiver, amount, memo) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        transactionHeaders
-    });
-    let nc = await eos.transfer(from, receiver, amount, memo, false);
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("transferEos result : ", JSON.stringify(processedTransaction));
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    transactionHeaders
+  });
+  let nc = await eos.transfer(from, receiver, amount, memo, false);
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transferEos result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -307,115 +313,118 @@ async function transferEos(privateKey, from, receiver, amount, memo) {
  * @return {Promise<void>}
  */
 async function transfer(privateKey, code, from, receiver, amount, memo) {
+  return new Promise(async (resolve, reject) => {
     let transactionHeaders = prepareHeader();
     let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+      chainId: config.chainId,
+      keyProvider: privateKey,
+      httpEndpoint: null,
+      transactionHeaders
     });
     await eos.fc.abiCache.abi(code, {
-            "version": "eosio::abi/1.0",
-            "types": [{
-                "new_type_name": "account_name",
-                "type": "name"
-            }],
-            "structs": [{
-                "name": "transfer",
-                "base": "",
-                "fields": [
-                    {"name": "from", "type": "account_name"},
-                    {"name": "to", "type": "account_name"},
-                    {"name": "quantity", "type": "asset"},
-                    {"name": "memo", "type": "string"}
-                ]
-            }, {
-                "name": "create",
-                "base": "",
-                "fields": [
-                    {"name": "issuer", "type": "account_name"},
-                    {"name": "maximum_supply", "type": "asset"}
-                ]
-            }, {
-                "name": "issue",
-                "base": "",
-                "fields": [
-                    {"name": "to", "type": "account_name"},
-                    {"name": "quantity", "type": "asset"},
-                    {"name": "memo", "type": "string"}
-                ]
-            }, {
-                "name": "account",
-                "base": "",
-                "fields": [
-                    {"name": "balance", "type": "asset"}
-                ]
-            }, {
-                "name": "currency_stats",
-                "base": "",
-                "fields": [
-                    {"name": "supply", "type": "asset"},
-                    {"name": "max_supply", "type": "asset"},
-                    {"name": "issuer", "type": "account_name"}
-                ]
-            }
-            ],
-            "actions": [{
-                "name": "transfer",
-                "type": "transfer",
-                "ricardian_contract": ""
-            }, {
-                "name": "issue",
-                "type": "issue",
-                "ricardian_contract": ""
-            }, {
-                "name": "create",
-                "type": "create",
-                "ricardian_contract": ""
-            }
-
-            ],
-            "tables": [{
-                "name": "accounts",
-                "type": "account",
-                "index_type": "i64",
-                "key_names": ["currency"],
-                "key_types": ["uint64"]
-            }, {
-                "name": "stat",
-                "type": "currency_stats",
-                "index_type": "i64",
-                "key_names": ["currency"],
-                "key_types": ["uint64"]
-            }
-            ],
-            "ricardian_clauses": [],
-            "abi_extensions": []
+        "version": "eosio::abi/1.0",
+        "types": [{
+          "new_type_name": "account_name",
+          "type": "name"
+        }],
+        "structs": [{
+          "name": "transfer",
+          "base": "",
+          "fields": [
+            {"name": "from", "type": "account_name"},
+            {"name": "to", "type": "account_name"},
+            {"name": "quantity", "type": "asset"},
+            {"name": "memo", "type": "string"}
+          ]
+        }, {
+          "name": "create",
+          "base": "",
+          "fields": [
+            {"name": "issuer", "type": "account_name"},
+            {"name": "maximum_supply", "type": "asset"}
+          ]
+        }, {
+          "name": "issue",
+          "base": "",
+          "fields": [
+            {"name": "to", "type": "account_name"},
+            {"name": "quantity", "type": "asset"},
+            {"name": "memo", "type": "string"}
+          ]
+        }, {
+          "name": "account",
+          "base": "",
+          "fields": [
+            {"name": "balance", "type": "asset"}
+          ]
+        }, {
+          "name": "currency_stats",
+          "base": "",
+          "fields": [
+            {"name": "supply", "type": "asset"},
+            {"name": "max_supply", "type": "asset"},
+            {"name": "issuer", "type": "account_name"}
+          ]
         }
+        ],
+        "actions": [{
+          "name": "transfer",
+          "type": "transfer",
+          "ricardian_contract": ""
+        }, {
+          "name": "issue",
+          "type": "issue",
+          "ricardian_contract": ""
+        }, {
+          "name": "create",
+          "type": "create",
+          "ricardian_contract": ""
+        }
+
+        ],
+        "tables": [{
+          "name": "accounts",
+          "type": "account",
+          "index_type": "i64",
+          "key_names": ["currency"],
+          "key_types": ["uint64"]
+        }, {
+          "name": "stat",
+          "type": "currency_stats",
+          "index_type": "i64",
+          "key_names": ["currency"],
+          "key_types": ["uint64"]
+        }
+        ],
+        "ricardian_clauses": [],
+        "abi_extensions": []
+      }
     );
     let nc = await eos.transaction(
-        {
-            actions: [
-                {
-                    account: code,
-                    name: 'transfer',
-                    authorization: [{
-                        actor: from,
-                        permission: 'active'
-                    }],
-                    data: {
-                        from: from,
-                        to: receiver,
-                        quantity: amount,
-                        memo: ''
-                    }
-                }
-            ]
-        }
+      {
+        actions: [
+          {
+            account: code,
+            name: 'transfer',
+            authorization: [{
+              actor: from,
+              permission: 'active'
+            }],
+            data: {
+              from: from,
+              to: receiver,
+              quantity: amount,
+              memo: memo
+            }
+          }
+        ]
+      }
     );
     let transaction = nc.transaction;
     let processedTransaction = pushTransaction(transaction);
     console.log("transfer result : ", JSON.stringify(processedTransaction));
+    resolve(processedTransaction);
+  });
 }
 
 /**
@@ -428,41 +437,41 @@ async function transfer(privateKey, code, from, receiver, amount, memo) {
  * @returns {Promise<void>}
  */
 async function newAccount(privateKey, creatoraccount, newaccount, newaccount_pubkey, ram = 4096, cpu = '0.2000 EOS', net = '0.2000 EOS') {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    //新账号
+    tr.newaccount({
+      creator: creatoraccount,
+      name: newaccount,
+      owner: newaccount_pubkey,
+      active: newaccount_pubkey
     });
-    let nc = await eos.transaction(tr => {
-        //新账号
-        tr.newaccount({
-            creator: creatoraccount,
-            name: newaccount,
-            owner: newaccount_pubkey,
-            active: newaccount_pubkey
-        });
 
-        //为新账号充RAM
-        tr.buyrambytes({
-            payer: creatoraccount,
-            receiver: newaccount,
-            bytes: ram
-        });
-
-        //为新账号抵押CPU和NET
-        tr.delegatebw({
-            from: creatoraccount,
-            receiver: newaccount,
-            stake_net_quantity: net,
-            stake_cpu_quantity: cpu,
-            transfer: 0
-        });
+    //为新账号充RAM
+    tr.buyrambytes({
+      payer: creatoraccount,
+      receiver: newaccount,
+      bytes: ram
     });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction)
-    console.log("new account result : ", JSON.stringify(processedTransaction));
+
+    //为新账号抵押CPU和NET
+    tr.delegatebw({
+      from: creatoraccount,
+      receiver: newaccount,
+      stake_net_quantity: net,
+      stake_cpu_quantity: cpu,
+      transfer: 0
+    });
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction)
+  console.log("new account result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -472,25 +481,25 @@ async function newAccount(privateKey, creatoraccount, newaccount, newaccount_pub
  * @returns {Promise<void>}
  */
 async function delegatebw(privateKey, from, receiver, cpu, net) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    tr.delegatebw({
+      from: from,
+      receiver: receiver,
+      stake_net_quantity: net,
+      stake_cpu_quantity: cpu,
+      transfer: 0
     });
-    let nc = await eos.transaction(tr => {
-        tr.delegatebw({
-            from: from,
-            receiver: receiver,
-            stake_net_quantity: net,
-            stake_cpu_quantity: cpu,
-            transfer: 0
-        });
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("delegatebw result : ", JSON.stringify(processedTransaction));
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("delegatebw result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -503,24 +512,24 @@ async function delegatebw(privateKey, from, receiver, cpu, net) {
  * @param net net（eos）
  */
 async function undelegatebw(privateKey, account, receiver, cpu, net) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    tr.undelegatebw({
+      from: account,
+      receiver: receiver,
+      unstake_net_quantity: net,
+      unstake_cpu_quantity: cpu
     });
-    let nc = await eos.transaction(tr => {
-        tr.undelegatebw({
-            from: account,
-            receiver: receiver,
-            unstake_net_quantity: net,
-            unstake_cpu_quantity: cpu
-        });
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("undelegatebw result : ", JSON.stringify(processedTransaction));
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("undelegatebw result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -530,17 +539,17 @@ async function undelegatebw(privateKey, account, receiver, cpu, net) {
  * @return {Promise<void>}
  */
 async function refund(privateKey, account) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.refund(account, false);
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("refund result : ", JSON.stringify(processedTransaction));
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.refund(account, false);
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("refund result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -553,23 +562,23 @@ async function refund(privateKey, account) {
  * @return {Promise<void>}
  */
 async function buyrambytes(privateKey, from, receiver, bytes) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    tr.buyrambytes({
+      payer: from,
+      receiver: receiver,
+      bytes: bytes
     });
-    let nc = await eos.transaction(tr => {
-        tr.buyrambytes({
-            payer: from,
-            receiver: receiver,
-            bytes: bytes
-        });
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("buyrambytes result : ", JSON.stringify(processedTransaction));
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("buyrambytes result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -581,22 +590,22 @@ async function buyrambytes(privateKey, from, receiver, bytes) {
  * @return {Promise<void>}
  */
 async function sellram(privateKey, account, bytes) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.transaction(tr => {
+    tr.sellram({
+      account: account,
+      bytes: bytes
     });
-    let nc = await eos.transaction(tr => {
-        tr.sellram({
-            account: account,
-            bytes: bytes
-        });
-    });
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("sellram result : ", JSON.stringify(processedTransaction));
+  });
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("sellram result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -605,20 +614,20 @@ async function sellram(privateKey, account, bytes) {
  * @returns {Promise<{expiration: *|Date, ref_block_num: number, ref_block_prefix: string|number}|*>}
  */
 function prepareHeader() {
-    expireInSeconds = 60 * 60;
-    info = getInfo();
-    chainDate = new Date(info.head_block_time + 'Z');
-    expiration = new Date(chainDate.getTime() + expireInSeconds * 1000);
-    expiration = expiration.toISOString().split('.')[0];
+  expireInSeconds = 60 * 60;
+  info = getInfo();
+  chainDate = new Date(info.head_block_time + 'Z');
+  expiration = new Date(chainDate.getTime() + expireInSeconds * 1000);
+  expiration = expiration.toISOString().split('.')[0];
 
-    block = getBlock(info.last_irreversible_block_id);
+  block = getBlock(info.last_irreversible_block_id);
 
-    transactionHeaders = {
-        expiration,
-        ref_block_num: info.last_irreversible_block_num & 0xffff,
-        ref_block_prefix: block.ref_block_prefix
-    };
-    return transactionHeaders;
+  transactionHeaders = {
+    expiration,
+    ref_block_num: info.last_irreversible_block_num & 0xffff,
+    ref_block_prefix: block.ref_block_prefix
+  };
+  return transactionHeaders;
 }
 
 /**
@@ -627,8 +636,8 @@ function prepareHeader() {
  * @param transaction
  */
 function pushTransaction(transaction) {
-    let ret = post(transaction, urls.pushTransaction);
-    return JSON.parse(ret.getBody('utf-8'));
+  let ret = post(transaction, urls.pushTransaction);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -637,8 +646,8 @@ function pushTransaction(transaction) {
  * @returns {any}
  */
 function getInfo() {
-    let ret = post(null, urls.getInfo);
-    return JSON.parse(ret.getBody('utf-8'));
+  let ret = post(null, urls.getInfo);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -647,9 +656,9 @@ function getInfo() {
  * @param blockNumberOrId
  */
 function getBlock(blockNumberOrId) {
-    let data = {block_num_or_id: blockNumberOrId};
-    let ret = post(data, urls.getBlock);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {block_num_or_id: blockNumberOrId};
+  let ret = post(data, urls.getBlock);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -658,9 +667,9 @@ function getBlock(blockNumberOrId) {
  * @return {any}
  */
 function fetchAbi(account) {
-    let data = {account_name: account};
-    let ret = post(data, urls.getAbi);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {account_name: account};
+  let ret = post(data, urls.getAbi);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -671,24 +680,24 @@ function fetchAbi(account) {
  * @return {Promise<void>}
  */
 async function deployToken(privateKey, account, supply) {
-    let wasm = fs.readFileSync(`./eosio.token.wasm`);
-    let abi = fs.readFileSync(`./eosio.token.abi`);
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        //binaryen: binaryen,
-        httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
-        //httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
-        transactionHeaders
-    });
-    await eos.setcode(account, 0, 0, wasm);
-    await eos.setabi(account, JSON.parse(abi));
+  let wasm = fs.readFileSync(`./eosio.token.wasm`);
+  let abi = fs.readFileSync(`./eosio.token.abi`);
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    //binaryen: binaryen,
+    httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+    //httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
+    transactionHeaders
+  });
+  await eos.setcode(account, 0, 0, wasm);
+  await eos.setabi(account, JSON.parse(abi));
 
-    await eos.transaction(account, myaccount => {
-        myaccount.create(account, supply);
-        myaccount.issue(account, supply, 'token inited.');
-    });
+  await eos.transaction(account, myaccount => {
+    myaccount.create(account, supply);
+    myaccount.issue(account, supply, 'token inited.');
+  });
 }
 
 /**
@@ -699,17 +708,17 @@ async function deployToken(privateKey, account, supply) {
  * @param abi abi
  */
 async function deployContract(privateKey, account, wasm, abi) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        //binaryen: binaryen,
-        httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
-        //httpEndpoint: 'http://localhost:9082/eosmix/nodeos',
-        transactionHeaders
-    });
-    await eos.setcode(account, 0, 0, wasm);
-    await eos.setabi(account, JSON.parse(abi));
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    //binaryen: binaryen,
+    httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+    //httpEndpoint: 'http://172.18.11.11:8100/eosmix/nodeos',
+    transactionHeaders
+  });
+  await eos.setcode(account, 0, 0, wasm);
+  await eos.setabi(account, JSON.parse(abi));
 }
 
 /**
@@ -719,16 +728,16 @@ async function deployContract(privateKey, account, wasm, abi) {
  * @return {Promise<*>}
  */
 async function eos(privateKey, account) {
-    let abi = fetchAbi(account);
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    await eos.fc.abiCache.abi(account, abi.abi);
-    return eos;
+  let abi = fetchAbi(account);
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  await eos.fc.abiCache.abi(account, abi.abi);
+  return eos;
 }
 
 /**
@@ -739,13 +748,13 @@ async function eos(privateKey, account) {
  * @return {any}
  */
 function getProducers(lowerBound, limit) {
-    let data = {
-        json: true,
-        lower_bound: lowerBound,
-        limit: limit
-    };
-    let ret = post(data, urls.getProducers);
-    return JSON.parse(ret.getBody('utf-8'));
+  let data = {
+    json: true,
+    lower_bound: lowerBound,
+    limit: limit
+  };
+  let ret = post(data, urls.getProducers);
+  return JSON.parse(ret.getBody('utf-8'));
 }
 
 /**
@@ -755,22 +764,22 @@ function getProducers(lowerBound, limit) {
  * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoshuobipool']
  */
 async function vote(privateKey, voter, proxy, producers) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.voteproducer({
-        voter: voter,
-        proxy: proxy,
-        producers: producers
-    });
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.voteproducer({
+    voter: voter,
+    proxy: proxy,
+    producers: producers
+  });
 
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("voteproducer result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -779,21 +788,21 @@ async function vote(privateKey, voter, proxy, producers) {
  * @param isproxy: 1 for register, 0 for unregister
  */
 async function regProxy(privateKey, proxy, isproxy) {
-    let transactionHeaders = await prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let nc = await eos.regproxy({
-        proxy: proxy,
-        isproxy: isproxy
-    });
+  let transactionHeaders = await prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let nc = await eos.regproxy({
+    proxy: proxy,
+    isproxy: isproxy
+  });
 
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("voteproducer result : ", JSON.stringify(processedTransaction));
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("voteproducer result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -803,12 +812,13 @@ async function regProxy(privateKey, proxy, isproxy) {
  * @param uri
  */
 function post(content, uri) {
-    let node = curNode;
-    let url = node.schema + '://' + node.hostname + (node.port ? (':' + node.port) : '') + node.prefix + uri;
-    let ret = request('POST', url, content == null ? '{}' : {
-        json: content
-    });
-    return ret;
+  let node = curNode;
+  let url = node.schema + '://' + node.hostname + (node.port ? (':' + node.port) : '') + node.prefix + uri;
+  let options = {};
+  options.headers = {'Postman-Token': '364a16a3-fbd1-4c94-97dc-7de38445334d'};
+  options.json = content == null ? {} : content;
+  let ret = request('POST', url, options);
+  return ret;
 }
 
 /**
@@ -818,18 +828,18 @@ function post(content, uri) {
  *  @return 1.0000
  */
 function precision(input, pre) {
-    let DecimalPad = Eos.modules.format.DecimalPad;
-    return DecimalPad(input, pre);
+  let DecimalPad = Eos.modules.format.DecimalPad;
+  return DecimalPad(input, pre);
 }
 
 /**
  * 产生公钥私钥
  */
 function randomKey() {
-    ecc.randomKey().then(privateKey => {
-        console.log('私钥 : ', privateKey);
-        console.log('公钥 : ', ecc.privateToPublic(privateKey));
-    });
+  ecc.randomKey().then(privateKey => {
+    console.log('私钥 : ', privateKey);
+    console.log('公钥 : ', ecc.privateToPublic(privateKey));
+  });
 }
 
 /**
@@ -837,8 +847,8 @@ function randomKey() {
  * @param privateKey
  */
 function publicKey(privateKey) {
-    let pub = ecc.privateToPublic(privateKey);
-    return pub;
+  let pub = ecc.privateToPublic(privateKey);
+  return pub;
 }
 
 /**
@@ -850,42 +860,42 @@ function publicKey(privateKey) {
  * @return {Promise<void>}
  */
 async function hi(privateKey, code, actor, user) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let abi = fetchAbi(code);
-    let abi_json = abi.abi;
-    await eos.fc.abiCache.abi(code, abi_json);
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
 
-    let nc = await eos.transaction(
+  let nc = await eos.transaction(
+    {
+      actions: [
         {
-            actions: [
-                {
-                    account: code,
-                    name: 'hi',
-                    authorization: [{
-                        actor: actor,
-                        permission: 'active'
-                    }],
-                    data: {
-                        user: user,
-                    }
-                }
-            ]
+          account: code,
+          name: 'hi',
+          authorization: [{
+            actor: actor,
+            permission: 'active'
+          }],
+          data: {
+            user: user,
+          }
         }
-    );
+      ]
+    }
+  );
 
-    //another implement, also OK!
-    //let contract = await eos.contract('yy');
-    //let nc = await contract.hi('yy',{  authorization: 'yy' });
+  //another implement, also OK!
+  //let contract = await eos.contract('yy');
+  //let nc = await contract.hi('yy',{  authorization: 'yy' });
 
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("transfer result : ", JSON.stringify(processedTransaction));
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -896,67 +906,67 @@ async function hi(privateKey, code, actor, user) {
  * @return {Promise<void>}
  */
 async function ping(privateKey, code, actor) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let abi = fetchAbi(code);
-    let abi_json = abi.abi;
-    await eos.fc.abiCache.abi(code, abi_json);
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
 
-    let nc = await eos.transaction(
+  let nc = await eos.transaction(
+    {
+      actions: [
         {
-            actions: [
-                {
-                    account: code,
-                    name: 'ping',
-                    authorization: [{
-                        actor: actor,
-                        permission: 'active'
-                    }],
-                    data: {}
-                }
-            ]
+          account: code,
+          name: 'ping',
+          authorization: [{
+            actor: actor,
+            permission: 'active'
+          }],
+          data: {}
         }
-    );
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("ping result : ", JSON.stringify(processedTransaction));
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("beat result : ", JSON.stringify(processedTransaction));
 }
 
 async function erase(privateKey, code, actor) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let abi = fetchAbi(code);
-    let abi_json = abi.abi;
-    await eos.fc.abiCache.abi(code, abi_json);
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
 
-    let nc = await eos.transaction(
+  let nc = await eos.transaction(
+    {
+      actions: [
         {
-            actions: [
-                {
-                    account: code,
-                    name: 'erase',
-                    authorization: [{
-                        actor: actor,
-                        permission: 'active'
-                    }],
-                    data: {}
-                }
-            ]
+          account: code,
+          name: 'erase',
+          authorization: [{
+            actor: actor,
+            permission: 'active'
+          }],
+          data: {}
         }
-    );
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("erase result : ", JSON.stringify(processedTransaction));
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("reset result : ", JSON.stringify(processedTransaction));
 }
 
 /**
@@ -986,47 +996,192 @@ async function erase(privateKey, code, actor) {
 
 
 async function issue(privateKey, code, issuer, receiver, amount, memo) {
-    let transactionHeaders = prepareHeader();
-    let eos = Eos({
-        chainId: config.chainId,
-        keyProvider: privateKey,
-        httpEndpoint: null,
-        transactionHeaders
-    });
-    let abi = fetchAbi(code);
-    let abi_json = abi.abi;
-    await eos.fc.abiCache.abi(code, abi_json);
-    let nc = await eos.transaction(
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
         {
-            actions: [
-                {
-                    account: code,
-                    name: 'issue',
-                    authorization: [{
-                        actor: issuer,
-                        permission: 'active'
-                    }],
-                    data: {
-                        to: receiver,
-                        quantity: amount,
-                        memo: memo
-                    }
-                }
-            ]
+          account: code,
+          name: 'issue',
+          authorization: [{
+            actor: issuer,
+            permission: 'active'
+          }],
+          data: {
+            to: receiver,
+            quantity: amount,
+            memo: memo
+          }
         }
-    );
+      ]
+    }
+  );
 
-    let transaction = nc.transaction;
-    let processedTransaction = pushTransaction(transaction);
-    console.log("transfer result : ", JSON.stringify(processedTransaction));
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
+/**
+ * setfund
+ * @param privateKey
+ * @param code
+ * @param actor
+ * @param fund
+ * @return {Promise<void>}
+ */
+async function setfund(privateKey, code, fund) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: code,
+          name: 'setfund',
+          authorization: [{
+            actor: code,
+            permission: 'active'
+          }],
+          data: {
+            fund: fund
+          }
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+/**
+ * set admin
+ * @param privateKey
+ * @param code
+ * @param admin
+ * @return {Promise<void>}
+ */
+async function setadmin(privateKey, code, admin) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(code);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(code, abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: code,
+          name: 'setadmin',
+          authorization: [{
+            actor: code,
+            permission: 'active'
+          }],
+          data: {
+            admin: admin
+          }
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+
+async function linkauth(privateKey, account, data) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi('eosio');
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi('eosio', abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: 'eosio',
+          name: 'linkauth',
+          authorization: [{
+            actor: account,
+            permission: 'active'
+          }],
+          data: data
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+async function unlinkauth(privateKey, account, data) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: privateKey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi('eosio');
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi('eosio', abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: 'eosio',
+          name: 'unlinkauth',
+          authorization: [{
+            actor: account,
+            permission: 'active'
+          }],
+          data: data
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+
 //随机一个私钥
-//randomKey();
+// randomKey();
 
 //let prikey = 'xxxxxx';
-let prikey = 'xxx';
-let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
+// let prikey = 'xxx';
+// let pubKey = 'EOS8icXZmymmiVUbV7jERCereDY75Fo3MMNbbK8VVwPEGceifbT9D';
 
 // let ret = getKeyAccounts(pubKey);
 // console.log(ret);
@@ -1044,23 +1199,96 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // let ret = delband('liuzhigang55');
 // console.log(ret);
 
-// transferEos(prikey, 'williamoony5', 'williamoony1', '0.1000 EOS', '测试转账');
 
-// let pubkey = 'EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig';//先randomKey生成一对公私钥，然后创建账户
-// newAccount(prikey, 'williamoony5', 'williamoony2', pubkey);
+// transferEos('xxxxxx', 'williamoony1', 'ikhygsdruw12', '1.0000 EOS', 'for check . ');
+
+
+// let pubkey = 'EOS5P24pkBpkzrun4TrxtyerLLZ5RVVcWi3pLrT2QiEq3oTiCUsSf';//先randomKey生成一对公私钥，然后创建账户
+// newAccount('xxxxxx', 'williamoony1', 'ikhygsdruw12', pubkey);
+
 
 // delegatebw(prikey,"williamoony5","williamoony5",'0.1000 EOS','0.1000 EOS');
 
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
-// let ret = getAccount('williamoony5');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
-// console.log(JSON.stringify(ret));
 
-
-// let acc = getAccount('williamoony2');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
-// let perms = newPermissions(acc, 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a', 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a');//替换成williamoony5的公钥
+// let acc = getAccount('eosfreetouse');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
+// console.log(JSON.stringify(acc));
+// let perms = newPermissions(acc, 'EOS7Q35LKYcUrvsASGT1Dd2sKnWNovLYZ5sDUF6MiaVbj9gMUKDzt', 'EOS7Q35LKYcUrvsASGT1Dd2sKnWNovLYZ5sDUF6MiaVbj9gMUKDzt');//替换成williamoony5的公钥
 // console.log(perms);
-// updateAuth('xxxxxxxxxx', 'williamoony2', perms);
+
+// let perms = [{
+//   "perm_name": "active",
+//   "parent": "owner",
+//   "required_auth": {
+//     "threshold": 1,
+//     "keys": [{
+//       "key": "EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z",
+//       "weight": 1
+//     }],
+//     "accounts": [],
+//     "waits": []
+//   }
+// }, {
+//   "perm_name": "owner",
+//   "parent": "",
+//   "required_auth": {
+//     "threshold": 1,
+//     "keys": [{
+//       "key": "EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z",
+//       "weight": 1
+//     }],
+//     "accounts": [],
+//     "waits": []
+//   }
+// }, {
+//   "perm_name": "redpacket",
+//   "parent": "active",
+//   "required_auth": {
+//     "threshold": 1,
+//     "keys": [{
+//       "key": "EOS6ReqckGA6ZwAXYET2iFxm5YtCQD3hAG73SWf2T6UUs3FmZhHkg",
+//       "weight": 1
+//     }],
+//     "accounts": [],
+//     "waits": []
+//   }
+// }];
+// updateAuth('5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c', 'eosfreetouse', perms);
+
+let actionAuth = {
+  account: "eosfreetouse",
+  code: "redpacket",
+  type: "get",
+  requirement: "redpacket"
+}
+let unauth = {
+  account: "eosfreetouse",
+  code: "redpacket",
+  type: "get"
+};
+
+let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+try {
+
+  linkauth(pri, 'eosfreetouse', actionAuth);
+} catch (e) {
+  console.log(e);
+}
+
+// try {
+//
+//   unlinkauth(pri, 'eosfreetouse', unauth);
+// } catch (e) {
+//   console.log(e);
+// }
+let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+try {
+  //setfund(pri, 'redpacket', 'signupeospro');
+  setadmin(pri, 'redpacket', 'eosfreetouse');
+} catch (e) {
+  console.log(e);
+}
 
 
 //refund(prikey,'williamoony5');
@@ -1076,10 +1304,20 @@ let pubKey = 'EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a';
 // } catch (e) {
 //     console.log(e);
 // }
+// prikey = 'xxxxx';
+// pubKey = ecc.privateToPublic(prikey);
+// console.log(pubKey);
+// try {
+//   transferEos(prikey, 'williamoony1', 'marslandlord', '0.0001 EOS', 'test');
+// } catch (e) {
+//   console.log(e);
+// }
 
-// transfer(prikey, 'everipediaiq', 'williamoony5', 'williamoony2', '0.100 IQ', '转点智商币，聪明起来！');
-// transfer(prikey, 'williamoony1', 'williamoony1', 'hongyuanyang', '10000.0000 EOS', '发钱啦');
 
+// prikey='xxxx';
+// transfer(prikey, 'williamoony1', 'williamoony1', 'yanliang5555', '10000.0000 EOS', '发钱啦');
+
+// prikey='xxxxxx';
 // let pub= publicKey(prikey);
 // console.log(JSON.stringify(pub));
 // let ret=getKeyAccounts(pub);
@@ -1109,39 +1347,103 @@ try {
     console.log(e);//
 }
 */
+
+// prikey = 'xxxx';
+// let ret = getAccount('williamoony1');//   EOS6pEzrdKwTpqURTp9Wocc6tdYTfZrGhE7hTKKfhZupFsoWCwn6a
+// console.log(JSON.stringify(ret));
+
+
+// let perms = [{
+//   "perm_name": "active",
+//   "parent": "owner",
+//   "required_auth": {
+//     "threshold": 1,
+//     "keys": [{
+//       "key": "EOS5GjTfXVaVAcvoJy5q8PQngunfnpauV5CzVfxYuoWuqWFuTBM3L",
+//       "weight": 1
+//     }],
+//     "accounts": [{
+//       "permission": {
+//         "actor": "marslandlord",
+//         "permission": "eosio.code"
+//       },
+//       "weight": 1
+//     }],
+//     "waits": []
+//   }
+// }, {
+//   "perm_name": "owner",
+//   "parent": "",
+//   "required_auth": {
+//     "threshold": 1,
+//     "keys": [{
+//       "key": "EOS5GjTfXVaVAcvoJy5q8PQngunfnpauV5CzVfxYuoWuqWFuTBM3L",
+//       "weight": 1
+//     }],
+//     "accounts": [],
+//     "waits": []
+//   }
+// }];
+// console.log(perms);
+// updateAuth(prikey, 'marslandlord', perms);
+
+
 // try {
-//     hi(prikey, "yy", "yy", "yy");
+//     hi(prikey, "marslandlord", "marslandlord", "marslandlord");
 // } catch (e) {
 //     console.log(e);//
 // }
 
+//erase(prikey, 'marslandlord', 'marslandlord');
 
-// prikey = 'xxx';
+
+// prikey = 'xxxx';
 // let wasm = fs.readFileSync(`./empty.wasm`);
 // let abi = fs.readFileSync(`./empty.abi`);
 // try {
-//     deployContract(prikey, "williamoony5", wasm, abi);
+//   deployContract(prikey, "marslandlord", wasm, abi);
 // } catch (e) {
-//     console.log(e);
+//   console.log(e);
 // }
 
 
-// prikey = 'xxx';
-// let wasm = fs.readFileSync(`./eosday.wasm`);
-// let abi = fs.readFileSync(`./eosday.abi`);
+// prikey = 'xxxx';
+// let wasm = fs.readFileSync(`./eosdayeosday.wasm`);
+// let abi = fs.readFileSync(`./eosdayeosday.abi`);
 // try {
-//     deployContract(prikey, "williamoony5", wasm, abi);
+//   deployContract(prikey, "marslandlord", wasm, abi);
 // } catch (e) {
-//     console.log(e);
+//   console.log(e);
 // }
 
 
-// prikey = 'xxx';
-// ping(prikey,'williamoony5','williamoony5');
+// prikey = 'xxxx';
+// let ret=getKeyAccounts(ecc.privateToPublic(prikey));
+// console.log(JSON.stringify(ret));
+//
+// try {
+//   transfer(prikey, 'eosio.token', 'williamoony5', 'williamoony1', '0.0001 EOS', '测试');
+//
+// } catch (e) {
+//   console.log(e);
+// }
 
 
-// prikey='xxx';
-// erase(prikey,'williamoony5','williamoony5');
+// buyrambytes(prikey,'marslandlord','marslandlord',300*1024);
+
+//delegatebw(prikey,"marslandlord","marslandlord",'2.0000 EOS','1.1000 EOS');
+
+
+// prikey = 'xxxxx';
+// try {
+//   ping(prikey, 'marslandlord', 'marslandlord');
+// } catch (e) {
+//   console.log(e);
+// }
+
+
+// prikey = 'xxxxx';
+// erase(prikey, 'marslandlord', 'marslandlord');
 
 
 //合约的数据库访问
@@ -1158,8 +1460,8 @@ try {
 //
 // table_key = new BigNumber(Format.encodeName('williamoony1', false));
 // params = {
-//     "code": "williamoony5",
-//     "scope": "williamoony5",
+//     "code": "marslandlord",
+//     "scope": "marslandlord",
 //     "table": "userbalance",
 //     "json": true,
 //     "lower_bound": 0,
@@ -1167,14 +1469,29 @@ try {
 //     "limit": 1111
 // };
 // table_key = new BigNumber(Format.encodeName('williamoony1', false));
+
+//userbalance   playertable   counter
+
 // params = {
-//     "code": "williamoony5",
-//     "scope": "williamoony5",
+//     "code": "marslandlord",
+//     "scope": "marslandlord",
 //     "table": "counter",
 //     "json": true,
 //     "lower_bound": 0,
-//     "upper_bound": -1,
-//     "limit": 1111
+//     "upper_bound": -1
+//
 // };
 // let ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
+//
+// params.table='userbalance';
+// ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
+//
+// params.table='playertable';
+// ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
+
+
+// let ret = getInfo();
 // console.log(JSON.stringify(ret));
