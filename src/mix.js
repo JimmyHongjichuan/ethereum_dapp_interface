@@ -1467,20 +1467,36 @@ updateAuth(prikey, contract, perms);
 */
 
 /**发红包*/
-//transfer(prikey, 'eosio.token', 'test1', contract, '1.0000 EOS', '1-1-1-2-hi...');
+//transfer(prikey, 'eosio.token', 'test2', contract, '1.0000 EOS', '1-2-2-2-hi...');
 
-/**查库*/
-params = {
-    "code": contract,
-    "scope": contract,
-    "table": "redpacket",
-    "json": true,
-    "lower_bound": 0,
-    "upper_bound": -1
+/**查库(id)*/
+// params = {
+//     "code": contract,
+//     "scope": contract,
+//     "table": "redpacket",
+//     "json": true,
+//     "lower_bound": 1,
+//     "upper_bound": 2
+// };
+// let ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
 
+/**查库(根据sender查)*/
+let table_key = new BigNumber(Format.encodeName('test2', false));
+let params = {
+  code: contract,
+  scope: contract,
+  table: "redpacket",
+  json: true,
+  lower_bound: table_key.toString(),
+  upper_bound: table_key.plus(1).toString(),
+  key_type: 'i64',
+  index_position: 2
 };
 let ret = getTableRows(params);
 console.log(JSON.stringify(ret));
+
+
 
 // /**领红包*/
 // getRed(prikey, 1, 'test2');
