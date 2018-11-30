@@ -1467,7 +1467,7 @@ let contract = 'rptest111111';
  */
 
 /**发红包*/
-//transfer(prikey, 'eosio.token', 'test2', contract, '1.0000 EOS', '1-2-2-2-hi...');
+//transfer(prikey, 'eosio.token', 'test2', contract, '2.0000 EOS', '1-6-2-2-hi...');
 
 /**查库(id)*/
 // params = {
@@ -1491,6 +1491,7 @@ let params = {
   json: true,
   lower_bound: table_key.toString(),
   upper_bound: table_key.plus(1).toString(),
+  limit: 1,
   key_type: 'i64',
   index_position: 2
 };
