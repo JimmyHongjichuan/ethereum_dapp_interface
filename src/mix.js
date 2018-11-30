@@ -713,8 +713,9 @@ async function deployContract(privateKey, account, wasm, abi) {
     chainId: config.chainId,
     keyProvider: privateKey,
     //binaryen: binaryen,
-    httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
+    //httpEndpoint: 'https://api1.eosasia.one',              //！！！！！！！！！这个地方不对，如果传入endpoint，那abi的下载就走这条路了。
     //httpEndpoint: 'http://172.18.11.11:8100/eosmix/nodeos',
+    httpEndpoint: 'http://172.18.11.11:7777',
     transactionHeaders
   });
   await eos.setcode(account, 0, 0, wasm);
@@ -1175,9 +1176,91 @@ async function unlinkauth(privateKey, account, data) {
   console.log("transfer result : ", JSON.stringify(processedTransaction));
 }
 
+async function get(data) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: '5Jq1XzuZ1dsGb2LSgsfA9nmpSEUpo3NnRkAYb9MdzRuFoTHZsEC',
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi('redpacketeos');
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi('redpacketeos', abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: 'redpacketeos',
+          name: 'get',
+          authorization: [{
+            actor: 'eosfreetouse',
+            permission: 'redpacket'
+          }],
+          data: data
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("transfer result : ", JSON.stringify(processedTransaction));
+}
+
+/**
+ * 领红包
+ * @param data
+ * @return {Promise<void>}
+ */
+async function getRed(prikey, id, receiver) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: prikey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi('rptest111111');
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi('rptest111111', abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: 'rptest111111',
+          name: 'get',
+          authorization: [{
+            actor: receiver,
+            permission: 'active'
+          }],
+          data: {
+            id: id,
+            receiver: receiver
+          }
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("getRed result : ", JSON.stringify(processedTransaction));
+}
+
+
+// let data = {
+//   receiver: "williamoony2",
+//   id: "15434920280946776",
+//   sig: "SIG_K1_K6pf4hhsfNzSsLgZusjNv2KTgPNySyQ5W6Da7xM9Eesz3jQLQPX5xkUgzr6CyN7wEkMeQXijmZgAcDV9NZAr626UUDCZkn"
+// };
+// try {
+//   get(data);
+// } catch (e) {
+//   console.log(e);
+// }
+
 
 //随机一个私钥
-// randomKey();
+//randomKey();
 
 //let prikey = 'xxxxxx';
 // let prikey = 'xxx';
@@ -1212,10 +1295,13 @@ async function unlinkauth(privateKey, account, data) {
 //undelegatebw(prikey,'williamoony5','0.1000 EOS','0.1000 EOS');
 
 
-// let acc = getAccount('eosfreetouse');//    EOS8NqJ2aKqPGFkKUUdbgKHWTbMjARAdzuBPznvyCWpYPg5DZJmig
+// let prikey='xxxx';
+// let acc = getAccount('williamoony2');//    EOS85KA15qFrdG3SqZ8pcBVi7G8AypBf9WG4HGFb8VtCb8NiWD7an
 // console.log(JSON.stringify(acc));
-// let perms = newPermissions(acc, 'EOS7Q35LKYcUrvsASGT1Dd2sKnWNovLYZ5sDUF6MiaVbj9gMUKDzt', 'EOS7Q35LKYcUrvsASGT1Dd2sKnWNovLYZ5sDUF6MiaVbj9gMUKDzt');//替换成williamoony5的公钥
+// let perms = newPermissions(acc, 'EOS85KA15qFrdG3SqZ8pcBVi7G8AypBf9WG4HGFb8VtCb8NiWD7an', 'EOS85KA15qFrdG3SqZ8pcBVi7G8AypBf9WG4HGFb8VtCb8NiWD7an');
 // console.log(perms);
+// updateAuth(prikey, 'williamoony2', perms);
+
 
 // let perms = [{
 //   "perm_name": "active",
@@ -1256,25 +1342,25 @@ async function unlinkauth(privateKey, account, data) {
 // }];
 // updateAuth('5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c', 'eosfreetouse', perms);
 
-let actionAuth = {
-  account: "eosfreetouse",
-  code: "redpacket",
-  type: "get",
-  requirement: "redpacket"
-}
-let unauth = {
-  account: "eosfreetouse",
-  code: "redpacket",
-  type: "get"
-};
-
-let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
-try {
-
-  linkauth(pri, 'eosfreetouse', actionAuth);
-} catch (e) {
-  console.log(e);
-}
+// let actionAuth = {
+//   account: "eosfreetouse",
+//   code: "redpacket",
+//   type: "get",
+//   requirement: "redpacket"
+// }
+// let unauth = {
+//   account: "eosfreetouse",
+//   code: "redpacket",
+//   type: "get"
+// };
+//
+// let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+// try {
+//
+//   linkauth(pri, 'eosfreetouse', actionAuth);
+// } catch (e) {
+//   console.log(e);
+// }
 
 // try {
 //
@@ -1282,13 +1368,13 @@ try {
 // } catch (e) {
 //   console.log(e);
 // }
-let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
-try {
-  //setfund(pri, 'redpacket', 'signupeospro');
-  setadmin(pri, 'redpacket', 'eosfreetouse');
-} catch (e) {
-  console.log(e);
-}
+// let pri = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+// try {
+//   //setfund(pri, 'redpacket', 'signupeospro');
+//   setadmin(pri, 'redpacket', 'eosfreetouse');
+// } catch (e) {
+//   console.log(e);
+// }
 
 
 //refund(prikey,'williamoony5');
@@ -1317,14 +1403,100 @@ try {
 // prikey='xxxx';
 // transfer(prikey, 'williamoony1', 'williamoony1', 'yanliang5555', '10000.0000 EOS', '发钱啦');
 
-// prikey='xxxxxx';
-// let pub= publicKey(prikey);
-// console.log(JSON.stringify(pub));
-// let ret=getKeyAccounts(pub);
+let prikey = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+let pubkey = 'EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z';
+let contract = 'rptest111111';
+// let ret = getKeyAccounts(pubkey);
 // console.log(JSON.stringify(ret));
 
+// ret = getCurrencyBalance('eosio.token', 'eosfreetouse', 'EOS');
+// console.log(JSON.stringify(ret));
+// try {
+//   newAccount(prikey, 'eosfreetouse', 'rptest111111', pubkey, 409600, '100.0000 EOS', '100.0000 EOS');    //ram = 4096, cpu = '0.2000 EOS', net = '0.2000 EOS'
+// } catch (e) {
+//   console.log(e);
+// }
 
-// let ret = getAbi('everipediaiq');
+/**发合约*/
+// let wasm = fs.readFileSync(`./redpacket.wasm`);
+// let abi = fs.readFileSync(`./redpacket.abi`);
+// try {
+//   deployContract(prikey, contract, wasm, abi);
+// } catch (e) {
+//   console.log(e);
+// }
+
+// let ret = fetchAbi(contract);
+// console.log(JSON.stringify(ret));
+
+/**改permission*/
+/**
+let perms = [{
+  "perm_name": "active",
+  "parent": "owner",
+  "required_auth": {
+    "threshold": 1,
+    "keys": [{
+      "key": pubkey,
+      "weight": 1
+    }],
+    "accounts": [{
+      "permission": {
+        "actor": contract,
+        "permission": "eosio.code"
+      },
+      "weight": 1
+    }],
+    "waits": []
+  }
+}, {
+  "perm_name": "owner",
+  "parent": "",
+  "required_auth": {
+    "threshold": 1,
+    "keys": [{
+      "key": pubkey,
+      "weight": 1
+    }],
+    "accounts": [],
+    "waits": []
+  }
+}];
+console.log(perms);
+updateAuth(prikey, contract, perms);
+*/
+
+/**发红包*/
+//transfer(prikey, 'eosio.token', 'test1', contract, '1.0000 EOS', '1-1-1-2-hi...');
+
+/**查库*/
+params = {
+    "code": contract,
+    "scope": contract,
+    "table": "redpacket",
+    "json": true,
+    "lower_bound": 0,
+    "upper_bound": -1
+
+};
+let ret = getTableRows(params);
+console.log(JSON.stringify(ret));
+
+// /**领红包*/
+// getRed(prikey, 1, 'test2');
+
+
+
+
+
+
+
+
+
+
+
+
+// let ret = fetchAbi('everipediaiq');
 // console.log(JSON.stringify(ret));
 
 
