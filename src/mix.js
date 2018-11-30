@@ -1431,7 +1431,7 @@ let contract = 'rptest111111';
 
 /**改permission*/
 /**
-let perms = [{
+ let perms = [{
   "perm_name": "active",
   "parent": "owner",
   "required_auth": {
@@ -1462,9 +1462,9 @@ let perms = [{
     "waits": []
   }
 }];
-console.log(perms);
-updateAuth(prikey, contract, perms);
-*/
+ console.log(perms);
+ updateAuth(prikey, contract, perms);
+ */
 
 /**发红包*/
 //transfer(prikey, 'eosio.token', 'test2', contract, '1.0000 EOS', '1-2-2-2-hi...');
@@ -1482,7 +1482,8 @@ updateAuth(prikey, contract, perms);
 // console.log(JSON.stringify(ret));
 
 /**查库(根据sender查)*/
-let table_key = new BigNumber(Format.encodeName('test2', false));
+let sender = 'test2';
+let table_key = new BigNumber(Format.encodeName(sender, false));
 let params = {
   code: contract,
   scope: contract,
@@ -1497,19 +1498,8 @@ let ret = getTableRows(params);
 console.log(JSON.stringify(ret));
 
 
-
 // /**领红包*/
 // getRed(prikey, 1, 'test2');
-
-
-
-
-
-
-
-
-
-
 
 
 // let ret = fetchAbi('everipediaiq');
