@@ -1767,13 +1767,6 @@ try {
 
 
 module.exports = {
-  clear,
-  getAccount,
-  getCurrencyBalance,
-  prepareHeader,
-  pushTransaction,
-  getInfo,
-  fetchAbi,
   exec,
   getTableRows,
   transfer,
