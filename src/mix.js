@@ -1220,14 +1220,16 @@ async function getRed(prikey, id, receiver) {
     httpEndpoint: null,
     transactionHeaders
   });
-  let abi = fetchAbi('rptest111111');
+  let data = '1';
+  let sign = ecc.sign(data, prikey);
+  let abi = fetchAbi(contract);
   let abi_json = abi.abi;
-  await eos.fc.abiCache.abi('rptest111111', abi_json);
+  await eos.fc.abiCache.abi(contract, abi_json);
   let nc = await eos.transaction(
     {
       actions: [
         {
-          account: 'rptest111111',
+          account: contract,
           name: 'get',
           authorization: [{
             actor: receiver,
@@ -1235,7 +1237,9 @@ async function getRed(prikey, id, receiver) {
           }],
           data: {
             id: id,
-            receiver: receiver
+            receiver: receiver,
+            data: data,
+            sig: sign
           }
         }
       ]
@@ -1246,6 +1250,43 @@ async function getRed(prikey, id, receiver) {
   console.log("getRed result : ", JSON.stringify(processedTransaction));
 }
 
+/**
+ * 清空数据库
+ *
+ * @param prikey
+ * @param contract
+ * @return {Promise<void>}
+ */
+async function clear(prikey, contract) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: prikey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(contract);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(contract, abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: contract,
+          name: 'clear',
+          authorization: [{
+            actor: contract,
+            permission: 'active'
+          }],
+          data: {}
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("clear result : ", JSON.stringify(processedTransaction));
+}
 
 // let data = {
 //   receiver: "williamoony2",
@@ -1403,21 +1444,26 @@ async function getRed(prikey, id, receiver) {
 // prikey='xxxx';
 // transfer(prikey, 'williamoony1', 'williamoony1', 'yanliang5555', '10000.0000 EOS', '发钱啦');
 
+
+/**红包合约操作*/
 let prikey = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
 let pubkey = 'EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z';
-let contract = 'rptest111111';
+let contract = 'rptest333333';
+
 // let ret = getKeyAccounts(pubkey);
 // console.log(JSON.stringify(ret));
-
+//
 // ret = getCurrencyBalance('eosio.token', 'eosfreetouse', 'EOS');
 // console.log(JSON.stringify(ret));
 // try {
-//   newAccount(prikey, 'eosfreetouse', 'rptest111111', pubkey, 409600, '100.0000 EOS', '100.0000 EOS');    //ram = 4096, cpu = '0.2000 EOS', net = '0.2000 EOS'
+//   newAccount(prikey, 'eosfreetouse', contract, pubkey, 409600, '100.0000 EOS', '100.0000 EOS');    //ram = 4096, cpu = '0.2000 EOS', net = '0.2000 EOS'
 // } catch (e) {
 //   console.log(e);
 // }
 
 /**发合约*/
+// let wasm = fs.readFileSync(`./empty.wasm`);
+// let abi = fs.readFileSync(`./empty.abi`);
 // let wasm = fs.readFileSync(`./redpacket.wasm`);
 // let abi = fs.readFileSync(`./redpacket.abi`);
 // try {
@@ -1466,8 +1512,11 @@ let contract = 'rptest111111';
  updateAuth(prikey, contract, perms);
  */
 
+/**清空数据库*/
+//clear(prikey,contract);
+
 /**发红包*/
-//transfer(prikey, 'eosio.token', 'test2', contract, '2.0000 EOS', '1-6-2-2-hi...');
+//transfer(prikey, 'eosio.token', 'test2', contract, '2.0000 EOS', '1-1-1-2-EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z-恭喜发财，大吉大利.');
 
 /**查库(id)*/
 // params = {
@@ -1475,32 +1524,32 @@ let contract = 'rptest111111';
 //     "scope": contract,
 //     "table": "redpacket",
 //     "json": true,
-//     "lower_bound": 1,
-//     "upper_bound": 2
+//     "lower_bound": 0,
+//     "upper_bound": -1
 // };
 // let ret = getTableRows(params);
 // console.log(JSON.stringify(ret));
 
 /**查库(根据sender查)*/
-let sender = 'test2';
-let table_key = new BigNumber(Format.encodeName(sender, false));
-let params = {
-  code: contract,
-  scope: contract,
-  table: "redpacket",
-  json: true,
-  lower_bound: table_key.toString(),
-  upper_bound: table_key.plus(1).toString(),
-  limit: 1,
-  key_type: 'i64',
-  index_position: 2
-};
-let ret = getTableRows(params);
-console.log(JSON.stringify(ret));
+// let sender = 'test1';
+// let table_key = new BigNumber(Format.encodeName(sender, false));
+// let params = {
+//   code: contract,
+//   scope: contract,
+//   table: "redpacket",
+//   json: true,
+//   lower_bound: table_key.toString(),
+//   upper_bound: table_key.plus(1).toString(),
+//   limit: 1,
+//   key_type: 'i64',
+//   index_position: 2
+// };
+// let ret = getTableRows(params);
+// console.log(JSON.stringify(ret));
 
 
 // /**领红包*/
-// getRed(prikey, 1, 'test2');
+getRed(prikey, 1, 'test2');
 
 
 // let ret = fetchAbi('everipediaiq');
