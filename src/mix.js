@@ -1288,6 +1288,47 @@ async function clear(prikey, contract) {
   console.log("clear result : ", JSON.stringify(processedTransaction));
 }
 
+/**
+ * 执行合约方法(默认使用account的active permission)
+ * @param prikey 私钥
+ * @param account 账户
+ * @param contract 合约
+ * @param method 方法
+ * @param params 方法参数
+ * @return {Promise<void>}
+ */
+async function exec(prikey, account, contract, method, params) {
+  let transactionHeaders = prepareHeader();
+  let eos = Eos({
+    chainId: config.chainId,
+    keyProvider: prikey,
+    httpEndpoint: null,
+    transactionHeaders
+  });
+  let abi = fetchAbi(contract);
+  let abi_json = abi.abi;
+  await eos.fc.abiCache.abi(contract, abi_json);
+  let nc = await eos.transaction(
+    {
+      actions: [
+        {
+          account: contract,
+          name: method,
+          authorization: [{
+            actor: account,
+            permission: 'active'
+          }],
+          data: params
+        }
+      ]
+    }
+  );
+  let transaction = nc.transaction;
+  let processedTransaction = pushTransaction(transaction);
+  console.log("exec result : ", JSON.stringify(processedTransaction));
+}
+
+
 // let data = {
 //   receiver: "williamoony2",
 //   id: "15434920280946776",
@@ -1446,9 +1487,9 @@ async function clear(prikey, contract) {
 
 
 /**红包合约操作*/
-let prikey = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
-let pubkey = 'EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z';
-let contract = 'rptest333333';
+// let prikey = '5KGQEVnw9oqwCAs1Qn7E8bf1hJos8b7xi9rAiS2pYyrazTcxu2c';
+// let pubkey = 'EOS635ETyYi4ZNCeHwasM2Q5Pp58vXt6idRnTDcsbrHVpwK1RWQ1Z';
+// let contract = 'rptest333333';
 
 // let ret = getKeyAccounts(pubkey);
 // console.log(JSON.stringify(ret));
@@ -1549,7 +1590,7 @@ let contract = 'rptest333333';
 
 
 // /**领红包*/
-getRed(prikey, 1, 'test2');
+//getRed(prikey, 1, 'test2');
 
 
 // let ret = fetchAbi('everipediaiq');
@@ -1723,3 +1764,17 @@ try {
 
 // let ret = getInfo();
 // console.log(JSON.stringify(ret));
+
+
+module.exports = {
+  clear,
+  getAccount,
+  getCurrencyBalance,
+  prepareHeader,
+  pushTransaction,
+  getInfo,
+  fetchAbi,
+  exec,
+  getTableRows,
+  transfer,
+};
