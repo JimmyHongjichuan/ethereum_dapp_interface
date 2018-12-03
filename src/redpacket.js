@@ -32,7 +32,7 @@ function sendRedpacket(type, amount, limit, blessing) {
     let publicKey = ecc.privateToPublic(privateKey);
     let id = new Date().getTime();
     let memo = '1-' + id + '-' + type + '-' + limit + '-' + publicKey + '-' + blessing;
-    mix.transfer(privateKey, 'eosio.token', account, contract, amount, memo);
+    mix.transfer(prikey, 'eosio.token', account, contract, amount, memo);
     sended(id, privateKey);
   });
 }
