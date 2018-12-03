@@ -92,7 +92,7 @@ function getSendedRedpackets(sender) {
   let params = {
     code: contract,
     scope: contract,
-    table: "redpacket",
+    table: 'redpacket',
     json: true,
     lower_bound: table_key.toString(),
     upper_bound: table_key.plus(1).toString(),
@@ -100,9 +100,12 @@ function getSendedRedpackets(sender) {
     key_type: 'i64',
     index_position: 2
   };
-  let ret = getTableRows(params);
+  let ret = mix.getTableRows(params);
   return ret;
 }
 
-let ret=redpacketInfo(1);
-console.log(JSON.stringify(ret));
+// let ret=redpacketInfo(1);
+// console.log(JSON.stringify(ret));
+
+// let ret=getSendedRedpackets('test2');
+// console.log(JSON.stringify(ret));
