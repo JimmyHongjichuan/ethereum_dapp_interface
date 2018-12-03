@@ -103,3 +103,6 @@ function getSendedRedpackets(sender) {
   let ret = getTableRows(params);
   return ret;
 }
+
+let ret=redpacketInfo(1);
+console.log(JSON.stringify(ret));
