@@ -9,8 +9,8 @@ if (typeof web3 !== 'undefined') {
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-//let keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
-let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+let keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
+//let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
 let keystore = JSON.parse(keystoreStr)
 let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
 
@@ -18,9 +18,9 @@ let rawTransaction = {
 
     "from": "0x5cdb3d471f319a481a375f95ee557ce3acb3588c",
 
-    "to": "0x8c4ffcc692af5d1000277e676819b405a0fa8478",
+    "to": "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b",
 
-    "value": web3.utils.toHex(web3.utils.toWei("10", "ether")),
+    "value": web3.utils.toHex(web3.utils.toWei("50", "ether")),
 
     "gas": 200000,
 
@@ -49,7 +49,7 @@ async function SendTransaction() {
     console.log(returnResult)
 }
 
-// SendTransaction()
+//SendTransaction()
 
 
 
@@ -229,12 +229,13 @@ OwnerOfQuery = async() => {
 }
 OwnerOfQuery()
 
-keystoreStr = fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
 
-keystore = JSON.parse(keystoreStr)
-decryptedAccount = web3.eth.accounts.decrypt(keystore, '123')
 // call transfer function
 MintERC721Toekn = async() => {
+    keystoreStr = fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
+
+    keystore = JSON.parse(keystoreStr)
+    decryptedAccount = web3.eth.accounts.decrypt(keystore, '123')
     // The gas price is determined by the last few blocks median gas price.
     const avgGasPrice = await web3.eth.getGasPrice();
 // current transaction gas prices from https://ethgasstation.info/
@@ -300,3 +301,83 @@ MintERC721Toekn = async() => {
 }
 
 //MintERC721Toekn()
+
+
+/**
+ * transfer ERC721
+ * @type {string}
+ */
+fromAddress = "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b";
+toAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
+
+// call transfer function
+TransferFromERC721Toekn = async() => {
+    keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+
+    keystore = JSON.parse(keystoreStr)
+    decryptedAccount = web3.eth.accounts.decrypt(keystore, '123')
+    // The gas price is determined by the last few blocks median gas price.
+    const avgGasPrice = await web3.eth.getGasPrice();
+// current transaction gas prices from https://ethgasstation.info/
+    const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3.eth.getTransactionCount(fromAddress);
+    let token_id = 0x1234
+// Will call estimate the gas a method execution will take when executed in the EVM without.
+    let estimateGas = await web3.eth.estimateGas({
+        "value": '0x0', // Only tokens
+        "data": contract.methods.transferFrom(fromAddress, toAddress, token_id).encodeABI(),
+        "from": fromAddress,
+        "to": toAddress
+    });
+    console.log({
+        estimateGas: estimateGas
+    });
+    const nonceHex = web3.utils.toHex(nonce)
+    chainIdHex= web3.utils.toHex(50)
+    gas = web3.utils.toHex(5000000000)
+    transaction = {
+        "value": '0x0', // Only tokens
+        "data": contract.methods.transferFrom(fromAddress, toAddress, token_id).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40',
+        // "gasLimit": web3.utils.toHex(estimateGas),
+        "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+        "chainId": chainIdHex
+    };
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        amount: amount,
+
+        avgGasPrice: avgGasPrice,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+
+TransferFromERC721Toekn()
