@@ -9,6 +9,10 @@ if (typeof web3 !== 'undefined') {
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
+/**
+ * ETH Transfer
+ * @type {Buffer}
+ */
 let keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
 //let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
 let keystore = JSON.parse(keystoreStr)
@@ -51,9 +55,9 @@ async function SendTransaction() {
 
 //SendTransaction()
 
-
-
-
+/**
+ * erc20 transfer
+ */
 // Use BigNumber
 let decimals = web3.utils.toBN(18);
 let amount = web3.utils.toBN(100);
@@ -62,9 +66,6 @@ let value = amount.mul(web3.utils.toBN(10).pow(decimals));
 
 let fromAddress = "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b";
 let toAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
-/**
- * erc20 transfer
- */
 let abiStr = fileUtil.readFileSync('./HPT_abi');
 let abiJson = JSON.parse(abiStr)
 let abiArray = abiJson;
@@ -114,6 +115,10 @@ let gasLimit = 3000000;
 
 // call transfer function
 TransferERC20Toekn = async() => {
+    let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+//let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+    let keystore = JSON.parse(keystoreStr)
+    let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
     let amount = 1;
     let tokenAmount = web3.utils.toWei(amount.toString(), 'ether')
 
@@ -307,12 +312,12 @@ MintERC721Toekn = async() => {
  * transfer ERC721
  * @type {string}
  */
-fromAddress = "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b";
-toAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
+fromAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
+toAddress = "0x8c4fFCc692AF5d1000277e676819b405A0Fa8478";
 
 // call transfer function
 TransferFromERC721Toekn = async() => {
-    keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+    keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
 
     keystore = JSON.parse(keystoreStr)
     decryptedAccount = web3.eth.accounts.decrypt(keystore, '123')
