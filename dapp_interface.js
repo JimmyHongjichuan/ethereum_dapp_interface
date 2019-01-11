@@ -66,7 +66,7 @@ let value = amount.mul(web3.utils.toBN(10).pow(decimals));
 
 let fromAddress = "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b";
 let toAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
-let abiStr = fileUtil.readFileSync('./HPT_abi');
+let abiStr = fileUtil.readFileSync('./UUToken_abi');
 let abiJson = JSON.parse(abiStr)
 let abiArray = abiJson;
 let contractAddress = "0x7bf09685b164d2491c4839ece2cb102a1d6a7a65";
@@ -200,18 +200,18 @@ TransferERC20Toekn = async() => {
     }
 }
 
-//TransferERC20Toekn()
+TransferERC20Toekn()
 
 /**
  * erc721 transfer
  */
- abiStr = fileUtil.readFileSync('./UUToken_abi');
- abiJson = JSON.parse(abiStr)
- abiArray = abiJson;
- contractAddress = "0x8b907e3163924aa887066215d8d065695f028f89";
- contract = new web3.eth.Contract(abiArray, contractAddress, {
-    from: fromAddress
-});
+//  abiStr = fileUtil.readFileSync('./UUToken_abi');
+//  abiJson = JSON.parse(abiStr)
+//  abiArray = abiJson;
+//  contractAddress = "0x8b907e3163924aa887066215d8d065695f028f89";
+//  contract = new web3.eth.Contract(abiArray, contractAddress, {
+//     from: fromAddress
+// });
 
 fromAddress = "0x8c4ffcc692af5d1000277e676819b405a0fa8478";
 toAddress = "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b";
@@ -385,4 +385,8 @@ TransferFromERC721Toekn = async() => {
     }
 }
 
-TransferFromERC721Toekn()
+module.exports()
+{
+    TransferFromERC721Toekn()
+}
+
