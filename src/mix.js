@@ -36,12 +36,6 @@ let nodes = [
   },
   {
     schema: 'http',
-    hostname: 'wallet-dev-02.sinnet.huobiidc.com',        // 测试环境
-    port: 80,
-    prefix: '/eosapi/nodeos',
-  },
-  {
-    schema: 'http',
     hostname: '127.0.0.1',
     port: 7777,
     prefix: '',
@@ -762,7 +756,7 @@ function getProducers(lowerBound, limit) {
  * 投票
  * @param  voter 账户
  * @param  proxy 为 '' 表示 voter直投， 如果不为空则为voter授权proxy代理投票，此时producers数组需为空
- * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoshuobipool']
+ * @param  producers 为投给的节点账户名数组,并且需要按照账户名字母排序  like ['eos42freedom','eoslaomao']
  */
 async function vote(privateKey, voter, proxy, producers) {
   let transactionHeaders = await prepareHeader();
