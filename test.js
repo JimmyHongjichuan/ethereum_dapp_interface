@@ -51,12 +51,7 @@ Web3 = require('web3');
 //             console.log("promise4"+data);}
 //     );
 
-abiStr = fileUtil.readFileSync('./UUToken_abi');
-abiJson = JSON.parse(abiStr)
-abiArray = abiJson;
-contractAddress = "0x8b907e3163924aa887066215d8d065695f028f89";
-fromAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
-toAddress = "0x8c4fFCc692AF5d1000277e676819b405A0Fa8478";
+
 if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider);
 } else {
@@ -64,16 +59,56 @@ if (typeof web3 !== 'undefined') {
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-let keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
-//let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
-let keystore = JSON.parse(keystoreStr)
-let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
+/**
+ * ERC721
+ */
+// abiStr = fileUtil.readFileSync('./UUToken_abi');
+// abiJson = JSON.parse(abiStr)
+// abiArray = abiJson;
+// contractAddress = "0x8b907e3163924aa887066215d8d065695f028f89";
+// fromAddress = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
+// toAddress = "0x8c4fFCc692AF5d1000277e676819b405A0Fa8478";
+//
+//
+// let keystoreStr = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
+// //let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
+// let keystore = JSON.parse(keystoreStr)
+// let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
+//
+// contract = new web3.eth.Contract(abiArray, contractAddress, {
+//     from: fromAddress
+// });
+//
+// dapp_inf.OwnerQuery(contract, fromAddress)
+// dapp_inf.OwnerOfQuery(contract, fromAddress, 0x1234)
+// dapp_inf.TransferFromERC721Toekn(web3, contract, fromAddress, toAddress, contractAddress, decryptedAccount)
+// console.log("script end");
 
-contract = new web3.eth.Contract(abiArray, contractAddress, {
-    from: fromAddress
+/**
+ * Gateway
+ */
+let abiStr_gateway = fileUtil.readFileSync('./Gatewayvote_abi');
+let abiArray_gateway = JSON.parse(abiStr_gateway);
+let contractAddressGateway = "0x0abfafdb75dd0bcc2b7789100fa45538db967fec";
+let fromAddressGateway = "0x9dd4610b7ccc7d21543c7c17c32405ce82441bf4";
+
+contractGateway = new web3.eth.Contract(abiArray_gateway, contractAddressGateway, {
+    from: fromAddressGateway
 });
 
-dapp_inf.OwnerQuery(contract, fromAddress)
-dapp_inf.OwnerOfQuery(contract, fromAddress, 0x1234)
-dapp_inf.TransferFromERC721Toekn(web3, contract, fromAddress, toAddress, contractAddress, decryptedAccount)
-console.log("script end");
+//dapp_inf.isVoter(web3,contractGateway,fromAddressGateway)
+
+/**
+ * WBCH
+ */
+
+let abiStr_wbch = fileUtil.readFileSync('./WBCHToken_abi');
+let abiArray_wbch = JSON.parse(abiStr_wbch);
+let contractAddressWBCH = "0x5a6143d6082b0cd034458c0230cdf0545d39a230";
+let fromAddressWBCH = "0x9dd4610b7ccc7d21543c7c17c32405ce82441bf4";
+
+contractWBCH = new web3.eth.Contract(abiArray_wbch, contractAddressWBCH, {
+    from: fromAddressWBCH
+});
+
+dapp_inf.BalanceQuery(contractWBCH, fromAddressWBCH)
