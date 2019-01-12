@@ -90,13 +90,16 @@ if (typeof web3 !== 'undefined') {
 let abiStr_gateway = fileUtil.readFileSync('./Gatewayvote_abi');
 let abiArray_gateway = JSON.parse(abiStr_gateway);
 let contractAddressGateway = "0x0abfafdb75dd0bcc2b7789100fa45538db967fec";
-let fromAddressGateway = "0x9dd4610b7ccc7d21543c7c17c32405ce82441bf4";
-
+let fromAddressGateway1 = "0x9ee4fc0c19b802e83e34696f4a5430e7e5b8f412";
+let fromAddressGateway2 = "0x9dd4610b7ccc7d21543c7c17c32405ce82441bf5";
 contractGateway = new web3.eth.Contract(abiArray_gateway, contractAddressGateway, {
-    from: fromAddressGateway
+    from: fromAddressGateway2
 });
-
-//dapp_inf.isVoter(web3,contractGateway,fromAddressGateway)
+let keystoreStrGateway1 = fileUtil.readFileSync('./keystore_9ee4fc0c19b802e83e34696f4a5430e7e5b8f412')
+let keystoreStrGateway2 = fileUtil.readFileSync('./keystore_9dd4610b7ccc7d21543c7c17c32405ce82441bf5')
+let decryptedAccountGateway1 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway1), '123');
+let decryptedAccountGateway2 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway2), '123');
+dapp_inf.isVoter(contractGateway,fromAddressGateway2)
 
 /**
  * WBCH
@@ -105,10 +108,16 @@ contractGateway = new web3.eth.Contract(abiArray_gateway, contractAddressGateway
 let abiStr_wbch = fileUtil.readFileSync('./WBCHToken_abi');
 let abiArray_wbch = JSON.parse(abiStr_wbch);
 let contractAddressWBCH = "0x5a6143d6082b0cd034458c0230cdf0545d39a230";
-let fromAddressWBCH = "0x9dd4610b7ccc7d21543c7c17c32405ce82441bf4";
+let fromAddressWBCH = "0x9ee4fc0c19b802e83e34696f4a5430e7e5b8f412";
 
 contractWBCH = new web3.eth.Contract(abiArray_wbch, contractAddressWBCH, {
     from: fromAddressWBCH
 });
 
-dapp_inf.BalanceQuery(contractWBCH, fromAddressWBCH)
+// dapp_inf.BalanceQuery(contractWBCH, fromAddressWBCH)
+dapp_inf.getMstop(contractGateway, fromAddressGateway2)
+dapp_inf.getMaxchainCode(contractGateway, fromAddressGateway2)
+dapp_inf.getChainCode(contractGateway, fromAddressGateway2,"EOS")
+dapp_inf.getmNumVoters(contractGateway, fromAddressGateway2)
+// dapp_inf.addChain(web3, contractGateway, fromAddressGateway2, "BTC", "addChain", contractAddressGateway, decryptedAccountGateway2)
+//dapp_inf.startContract(web3, contractGateway, fromAddressGateway, "start", contractAddressGateway, decryptedAccountGateway)
