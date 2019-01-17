@@ -99,7 +99,7 @@ let keystoreStrGateway1 = fileUtil.readFileSync('./keystore_9ee4fc0c19b802e83e34
 let keystoreStrGateway2 = fileUtil.readFileSync('./keystore_9dd4610b7ccc7d21543c7c17c32405ce82441bf5')
 let decryptedAccountGateway1 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway1), '123');
 let decryptedAccountGateway2 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway2), '123');
-dapp_inf.isVoter(contractGateway,fromAddressGateway2)
+// dapp_inf.isVoter(contractGateway,fromAddressGateway2)
 
 /**
  * WBCH
@@ -114,13 +114,13 @@ contractWBCH = new web3.eth.Contract(abiArray_wbch, contractAddressWBCH, {
     from: fromAddressWBCH
 });
 
-dapp_inf.BalanceQuery(contractWBCH, fromAddressWBCH)
-dapp_inf.getMstop(contractGateway, fromAddressGateway2)
-dapp_inf.getMaxchainCode(contractGateway, fromAddressGateway2)
-dapp_inf.getChainCode(contractGateway, fromAddressGateway2,"BTC")
-dapp_inf.getmNumVoters(contractGateway, fromAddressGateway2)
-dapp_inf.getAppCode(contractGateway, fromAddressGateway2,contractAddressWBCH)
-dapp_inf.getAppInfo(contractGateway, fromAddressGateway2,1)
+// dapp_inf.BalanceQuery(contractWBCH, fromAddressWBCH)
+// dapp_inf.getMstop(contractGateway, fromAddressGateway2)
+// dapp_inf.getMaxchainCode(contractGateway, fromAddressGateway2)
+// dapp_inf.getChainCode(contractGateway, fromAddressGateway2,"BTC")
+// dapp_inf.getmNumVoters(contractGateway, fromAddressGateway2)
+// dapp_inf.getAppCode(contractGateway, fromAddressGateway2,contractAddressWBCH)
+// dapp_inf.getAppInfo(contractGateway, fromAddressGateway2,1)
 
 // CHAIN   TOKEN code
 // BTC:1   WBCH：1
@@ -131,3 +131,23 @@ dapp_inf.getAppInfo(contractGateway, fromAddressGateway2,1)
 //dapp_inf.addApp(web3, contractGateway, fromAddressGateway1, contractAddressWBCH, 1, 1,"addApp", contractAddressGateway, decryptedAccountGateway1)
  //dapp_inf.addChain(web3, contractGateway, fromAddressGateway1, "BTC", "addChain", contractAddressGateway, decryptedAccountGateway1)
 //dapp_inf.startContract(web3, contractGateway, fromAddressGateway, "start", contractAddressGateway, decryptedAccountGateway)
+
+
+//kitty
+let abiStr_kitty = fileUtil.readFileSync('./CryptoKitty_abi');
+let abiArray_kitty = JSON.parse(abiStr_kitty);
+let contractAddressKITTY = "0x861bdf3507bbf58abb178bb193ecf59c4879e819";//"0x240cc7bb13a949ad8addf02f8e64730987891991";
+let fromAddressKITTY = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
+let keystoreStrKitty = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
+let decryptedAccountKitty = web3.eth.accounts.decrypt(JSON.parse(keystoreStrKitty), '123');
+contractKITTY= new web3.eth.Contract(abiArray_kitty, contractAddressKITTY, {
+    from: fromAddressKITTY
+});
+dapp_inf.implementsERC721(contractKITTY, fromAddressKITTY)
+dapp_inf.canBreedWith(contractKITTY, 0x1, 0x2)
+dapp_inf.isReadyToBreed(contractKITTY, 0x1)
+dapp_inf.isReadyToBreed(contractKITTY, 0x2)
+dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, contractAddressKITTY, decryptedAccountKitty)
+dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, value, contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x987654321,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.OwnerOfQuery(contractKITTY, fromAddressKITTY, 0x1)
