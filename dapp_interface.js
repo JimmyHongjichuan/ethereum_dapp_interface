@@ -892,8 +892,8 @@ breedWithAuto = async(web3js, contract, fromAddress, matronId, sireId, value, co
 
     const nonceHex = web3js.utils.toHex(nonce)
     chainIdHex= web3js.utils.toHex(50)
-    //let gas =await  contract.methods.breedWithAuto(matronId, sireId).estimateGas({from:fromAddress, value:value})
-    let  gas = web3js.utils.toHex(1000000000)
+    let gas =await  contract.methods.breedWithAuto(matronId, sireId).estimateGas({from:fromAddress, value:value})
+   // let  gas = web3js.utils.toHex(1000000000)
     gas = web3js.utils.toHex(gas)
     transaction = {
         "value": value, // Only tokens
@@ -904,7 +904,119 @@ breedWithAuto = async(web3js, contract, fromAddress, matronId, sireId, value, co
         "gas": gas,
         "gasLimit": '0x7000000D40000',
         //"gasLimit":gas,
-        "gasPrice": web3js.utils.toHex(Math.trunc(1 * 1e9)),
+        "gasPrice": web3js.utils.toHex(Math.trunc(2 * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3js.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3js.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+mPaused = async(contract, fromAddress) => {
+    let name = await contract.methods.paused().call({from: fromAddress});
+    console.log(`Is paused?: ${name}`);
+}
+
+mCeoAddress  = async(contract, fromAddress) => {
+    let name = await contract.methods.ceoAddress().call({from: fromAddress});
+    console.log(`CEO address?: ${name}`);
+}
+
+unpause = async(web3js, contract, fromAddress, contractAddress, decryptedAccount) =>{
+    //const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3js.eth.getTransactionCount(fromAddress);
+
+    const nonceHex = web3js.utils.toHex(nonce)
+    chainIdHex= web3js.utils.toHex(50)
+  //  let gas =await  contract.methods.unpause().estimateGas()
+    let  gas = web3js.utils.toHex(1000000000)
+    gas = web3js.utils.toHex(gas)
+    transaction = {
+        "value": "0x0", // Only tokens
+        "data": contract.methods.unpause().encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40000',
+        //"gasLimit":gas,
+        "gasPrice": web3js.utils.toHex(Math.trunc(5 * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3js.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3js.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+setGeneScienceAddress = async(web3js, contract, fromAddress, geneaddress, contractAddress, decryptedAccount) =>{
+    //const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3js.eth.getTransactionCount(fromAddress);
+
+    const nonceHex = web3js.utils.toHex(nonce)
+    chainIdHex= web3js.utils.toHex(50)
+    let gas =await  contract.methods.setGeneScienceAddress(geneaddress).estimateGas()
+   // let  gas = web3js.utils.toHex(1000000000)
+    gas = web3js.utils.toHex(gas)
+    transaction = {
+        "value": "0x0", // Only tokens
+        "data": contract.methods.setGeneScienceAddress(geneaddress).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40000',
+        //"gasLimit":gas,
+        "gasPrice": web3js.utils.toHex(Math.trunc(5 * 1e9)),
         "chainId": chainIdHex
     };
 
@@ -938,6 +1050,128 @@ breedWithAuto = async(web3js, contract, fromAddress, matronId, sireId, value, co
     }
 }
 
+setSaleAuctionAddress = async(web3js, contract, fromAddress, SaleAuctionAddress, contractAddress, decryptedAccount) =>{
+    //const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3js.eth.getTransactionCount(fromAddress);
+
+    const nonceHex = web3js.utils.toHex(nonce)
+    chainIdHex= web3js.utils.toHex(50)
+    let gas =await  contract.methods.setSaleAuctionAddress(SaleAuctionAddress).estimateGas()
+    // let  gas = web3js.utils.toHex(1000000000)
+    gas = web3js.utils.toHex(gas)
+    transaction = {
+        "value": "0x0", // Only tokens
+        "data": contract.methods.setSaleAuctionAddress(SaleAuctionAddress).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40000',
+        //"gasLimit":gas,
+        "gasPrice": web3js.utils.toHex(Math.trunc(5 * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3js.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3js.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+
+setSiringAuctionAddress = async(web3js, contract, fromAddress, SiringAuctionAddress, contractAddress, decryptedAccount) =>{
+    //const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3js.eth.getTransactionCount(fromAddress);
+
+    const nonceHex = web3js.utils.toHex(nonce)
+    chainIdHex= web3js.utils.toHex(50)
+    let gas =await  contract.methods.setSiringAuctionAddress(SiringAuctionAddress).estimateGas()
+    // let  gas = web3js.utils.toHex(1000000000)
+    gas = web3js.utils.toHex(gas)
+    transaction = {
+        "value": "0x0", // Only tokens
+        "data": contract.methods.setSiringAuctionAddress(SiringAuctionAddress).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40000',
+        //"gasLimit":gas,
+        "gasPrice": web3js.utils.toHex(Math.trunc(5 * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3js.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3js.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+
+mNonFungibleContract =  async(contract, fromAddress) => {
+    let name = await contract.methods.nonFungibleContract().call({from: fromAddress});
+    console.log(`Auction address: ${name}`);
+}
+isGeneScience =  async(contract, fromAddress) => {
+    let name = await contract.methods.isGeneScience().call({from: fromAddress});
+    console.log(`isGeneScience: ${name}`);
+}
+
+mixGenes =  async(contract, gen1, gen2, fromAddress) => {
+    let name = await contract.methods.mixGenes(gen1, gen2).call({from: fromAddress});
+    console.log(`mix=: ${name}`);
+}
+
+isReadyToBreed = async(contract, kittyId, fromAddress) => {
+    let name = await contract.methods.isReadyToBreed(kittyId).call({from: fromAddress});
+    console.log(`isReadyToBreed=: ${name}`);
+}
 
 module.exports =
 {
@@ -966,5 +1200,15 @@ module.exports =
     breedWith,
     isReadyToBreed,
     breedWithAuto,
+    mPaused,
+    unpause,
+    mCeoAddress,
+    mNonFungibleContract,
+    isGeneScience,
+    mixGenes,
+    setGeneScienceAddress,
+    setSaleAuctionAddress,
+    setSiringAuctionAddress,
+    isReadyToBreed,
 }
 

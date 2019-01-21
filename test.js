@@ -138,6 +138,43 @@ contractWBCH = new web3.eth.Contract(abiArray_wbch, contractAddressWBCH, {
 //dapp_inf.startContract(web3, contractGateway, fromAddressGateway, "start", contractAddressGateway, decryptedAccountGateway)
 
 
+//salaclockAuction
+let abiStr_saleClockAuction = fileUtil.readFileSync('./SaleClockAuction_abi');
+let abiArray_saleClockAuction = JSON.parse(abiStr_saleClockAuction);
+let contractAddressSaleClockAuction = "0x11f86688828671ef48acb729e364ca68f6477218";
+let fromAddressSale = "0x8c4ffcc692af5d1000277e676819b405a0fa8478";
+let keystoreStrSale= fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
+let decryptedAccountSaleClockAuction = web3.eth.accounts.decrypt(JSON.parse(keystoreStrSale), '123');
+contractSaleClockAuction= new web3.eth.Contract(abiArray_saleClockAuction, contractAddressSaleClockAuction, {
+    from: fromAddressSale
+});
+dapp_inf.mNonFungibleContract(contractSaleClockAuction, fromAddressSale)
+
+//siringclockAuction
+let abiStr_siringClockAuction = fileUtil.readFileSync('./SiringClockAuction_abi');
+let abiArray_siringClockAuction = JSON.parse(abiStr_siringClockAuction);
+let contractAddressSiringClockAuction = "0xfe68172b73c189bf3afdbd43618a930f7c308e22";
+let fromAddressSiring = "0x8c4ffcc692af5d1000277e676819b405a0fa8478";
+let keystoreStrSiring= fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
+let decryptedAccountSiringClockAuction = web3.eth.accounts.decrypt(JSON.parse(keystoreStrSiring), '123');
+contractSiringClockAuction= new web3.eth.Contract(abiArray_siringClockAuction, contractAddressSiringClockAuction, {
+    from: fromAddressSiring
+});
+dapp_inf.mNonFungibleContract(contractSiringClockAuction, fromAddressSiring)
+
+//genescience
+let abiStr_GeneScience= fileUtil.readFileSync('./GeneScience_abi');
+let abiArray_GeneScience = JSON.parse(abiStr_GeneScience);
+let contractAddressGeneScience = "0xbcfa5133479c9994b2d92b75fe60d2f406a8d1c9";
+let fromAddressGeneScience = "0x8c4ffcc692af5d1000277e676819b405a0fa8478";
+let keystoreStrGeneScience= fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
+let decryptedAccountGeneScience = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGeneScience), '123');
+contractGeneScience= new web3.eth.Contract(abiArray_GeneScience, contractAddressGeneScience, {
+    from: fromAddressGeneScience
+});
+dapp_inf.isGeneScience(contractGeneScience, fromAddressGeneScience)
+dapp_inf.mixGenes(contractGeneScience, 0xa, 0x5, fromAddressGeneScience)
+
 //kitty
 let abiStr_kitty = fileUtil.readFileSync('./CryptoKitty_abi');
 let abiArray_kitty = JSON.parse(abiStr_kitty);
@@ -148,11 +185,18 @@ let decryptedAccountKitty = web3.eth.accounts.decrypt(JSON.parse(keystoreStrKitt
 contractKITTY= new web3.eth.Contract(abiArray_kitty, contractAddressKITTY, {
     from: fromAddressKITTY
 });
-dapp_inf.implementsERC721(contractKITTY, fromAddressKITTY)
-dapp_inf.canBreedWith(contractKITTY, 0x1, 0x3)
-dapp_inf.isReadyToBreed(contractKITTY, 0x1)
-dapp_inf.isReadyToBreed(contractKITTY, 0x3)
+// dapp_inf.implementsERC721(contractKITTY, fromAddressKITTY)
+// dapp_inf.canBreedWith(contractKITTY, 0x1, 0x3)
+// dapp_inf.isReadyToBreed(contractKITTY, 0x1)
+// dapp_inf.isReadyToBreed(contractKITTY, 0x3)
 //dapp_inf.breedWith(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, contractAddressKITTY, decryptedAccountKitty)
-//dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, web3.utils.toWei("3","ether"), contractAddressKITTY, decryptedAccountKitty)
-//app_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x8764321,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
-dapp_inf.OwnerOfQuery(contractKITTY, fromAddressKITTY, 0x3)
+dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x3, 0x4, web3.utils.toWei("3","ether"), contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x135246852741,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
+// dapp_inf.OwnerOfQuery(contractKITTY, fromAddressKITTY, 0x3)
+// dapp_inf.unpause(web3, contractKITTY, fromAddressKITTY, contractAddressKITTY, decryptedAccountKitty)
+dapp_inf.mPaused(contractKITTY, fromAddressKITTY)
+//dapp_inf.isReadyToBreed(contractKITTY, 0x3, fromAddressKITTY)
+// dapp_inf.mCeoAddress(contractKITTY, fromAddressKITTY)
+//dapp_inf.setGeneScienceAddress(web3, contractKITTY, fromAddressKITTY, contractAddressGeneScience,contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.setSaleAuctionAddress(web3, contractKITTY, fromAddressKITTY, contractAddressSaleClockAuction,contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.setSiringAuctionAddress(web3, contractKITTY, fromAddressKITTY, contractAddressSiringClockAuction,contractAddressKITTY, decryptedAccountKitty)
