@@ -102,7 +102,7 @@ let keystoreStrGateway3 = fileUtil.readFileSync('./keystore_a6c4e089c9a2e7b7aa03
 let decryptedAccountGateway1 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway1), '123');
 let decryptedAccountGateway2 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway2), '123');
 let decryptedAccountGateway3 = web3.eth.accounts.decrypt(JSON.parse(keystoreStrGateway3), '123');
-dapp_inf.isVoter(contractGateway,fromAddressGateway3)
+//dapp_inf.isVoter(contractGateway,fromAddressGateway3)
 // dapp_inf.getMstop(contractGateway, fromAddressGateway2)
 // dapp_inf.getMaxchainCode(contractGateway, fromAddressGateway2)
 // dapp_inf.getChainCode(contractGateway, fromAddressGateway2,"BTC")
