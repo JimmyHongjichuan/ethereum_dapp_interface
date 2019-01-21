@@ -1154,6 +1154,58 @@ setSiringAuctionAddress = async(web3js, contract, fromAddress, SiringAuctionAddr
     }
 }
 
+giveBirth  = async(web3js, contract, fromAddress, matronId, contractAddress, decryptedAccount) =>{
+    //const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3js.eth.getTransactionCount(fromAddress);
+
+    const nonceHex = web3js.utils.toHex(nonce)
+    chainIdHex= web3js.utils.toHex(50)
+    let gas =await  contract.methods.giveBirth(matronId).estimateGas()
+    // let  gas = web3js.utils.toHex(1000000000)
+    gas = web3js.utils.toHex(gas)
+    transaction = {
+        "value": "0x0", // Only tokens
+        "data": contract.methods.giveBirth(matronId).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        "gas": gas,
+        "gasLimit": '0x7000000D40000',
+        //"gasLimit":gas,
+        "gasPrice": web3js.utils.toHex(Math.trunc(5 * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * web3.js
+     */
+        // Creates an account object from a private key.
+    const senderAccount = web3js.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3js.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
+
 mNonFungibleContract =  async(contract, fromAddress) => {
     let name = await contract.methods.nonFungibleContract().call({from: fromAddress});
     console.log(`Auction address: ${name}`);
@@ -1172,6 +1224,14 @@ isReadyToBreed = async(contract, kittyId, fromAddress) => {
     let name = await contract.methods.isReadyToBreed(kittyId).call({from: fromAddress});
     console.log(`isReadyToBreed=: ${name}`);
 }
+
+getKitty = async(contract, kittyId, fromAddress) => {
+    let name = await contract.methods.getKitty(kittyId).call({from: fromAddress});
+    console.log(`kitty_info ${kittyId}: isGestating:${name[0]} ,isReady:${name[1]}, cooldownIndex:${name[2]},nextActionAt:${name[3]}，
+    siringWithId:${name[4]}, birthTime:${name[5]}, matronId:${name[6]},sireId:${name[6]},generation:${name[7]},
+    ,genes:${name[8]}`);
+}
+
 
 module.exports =
 {
@@ -1210,5 +1270,7 @@ module.exports =
     setSaleAuctionAddress,
     setSiringAuctionAddress,
     isReadyToBreed,
+    giveBirth,
+    getKitty,
 }
 
