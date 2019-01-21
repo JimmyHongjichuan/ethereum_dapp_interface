@@ -136,18 +136,18 @@ contractWBCH = new web3.eth.Contract(abiArray_wbch, contractAddressWBCH, {
 //kitty
 let abiStr_kitty = fileUtil.readFileSync('./CryptoKitty_abi');
 let abiArray_kitty = JSON.parse(abiStr_kitty);
-let contractAddressKITTY = "0x861bdf3507bbf58abb178bb193ecf59c4879e819";//"0x240cc7bb13a949ad8addf02f8e64730987891991";
-let fromAddressKITTY = "0x5cdb3d471f319a481a375f95ee557ce3acb3588c";
-let keystoreStrKitty = fileUtil.readFileSync('./keystore_5cdb3d471f319a481a375f95ee557ce3acb3588c')
+let contractAddressKITTY = "0xcc2449d0b9df19a09c51e8017557a2fe8e12fb3d";//"0x240cc7bb13a949ad8addf02f8e64730987891991";
+let fromAddressKITTY = "0x8c4ffcc692af5d1000277e676819b405a0fa8478";
+let keystoreStrKitty = fileUtil.readFileSync('./keystore_8c4ffcc692af5d1000277e676819b405a0fa8478')
 let decryptedAccountKitty = web3.eth.accounts.decrypt(JSON.parse(keystoreStrKitty), '123');
 contractKITTY= new web3.eth.Contract(abiArray_kitty, contractAddressKITTY, {
     from: fromAddressKITTY
 });
 dapp_inf.implementsERC721(contractKITTY, fromAddressKITTY)
-dapp_inf.canBreedWith(contractKITTY, 0x1, 0x2)
+dapp_inf.canBreedWith(contractKITTY, 0x1, 0x3)
 dapp_inf.isReadyToBreed(contractKITTY, 0x1)
-dapp_inf.isReadyToBreed(contractKITTY, 0x2)
-dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, contractAddressKITTY, decryptedAccountKitty)
-dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, value, contractAddressKITTY, decryptedAccountKitty)
-//dapp_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x987654321,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
-//dapp_inf.OwnerOfQuery(contractKITTY, fromAddressKITTY, 0x1)
+dapp_inf.isReadyToBreed(contractKITTY, 0x3)
+//dapp_inf.breedWith(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, contractAddressKITTY, decryptedAccountKitty)
+//dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, web3.utils.toWei("3","ether"), contractAddressKITTY, decryptedAccountKitty)
+//app_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x8764321,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
+dapp_inf.OwnerOfQuery(contractKITTY, fromAddressKITTY, 0x3)

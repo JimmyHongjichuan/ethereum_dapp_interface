@@ -683,7 +683,7 @@ isReadyToBreed = async(contract, kittyId) => {
 }
 
 createPromoKitty = async(web3js, contract, fromAddress, genes,owner, contractAddress, decryptedAccount) =>{
-    const currentGasPrices = await GetCurrentGasPrices();
+   // const currentGasPrices = await GetCurrentGasPrices();
     let nonce = await web3js.eth.getTransactionCount(fromAddress);
 
     const nonceHex = web3js.utils.toHex(nonce)
@@ -699,7 +699,7 @@ createPromoKitty = async(web3js, contract, fromAddress, genes,owner, contractAdd
         "gas": gas,
         "gasLimit": '0x7000000D4000',
         // "gasLimit": web3.utils.toHex(estimateGas),
-        "gasPrice": web3js.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+        "gasPrice": web3js.utils.toHex(Math.trunc(2* 1e9)),
         "chainId": chainIdHex
     };
 
@@ -734,14 +734,14 @@ createPromoKitty = async(web3js, contract, fromAddress, genes,owner, contractAdd
 }
 
 breedWith = async(web3js, contract, fromAddress, matronId, sireId, contractAddress, decryptedAccount) =>{
-    const currentGasPrices = await GetCurrentGasPrices();
+    //const currentGasPrices = await GetCurrentGasPrices();
     let nonce = await web3js.eth.getTransactionCount(fromAddress);
 
     const nonceHex = web3js.utils.toHex(nonce)
     chainIdHex= web3js.utils.toHex(50)
-    let gas =await  contract.methods.breedWith(matronId, sireId).estimateGas()
-    //gas = web3js.utils.toHex(5000000000)
-    gas = web3js.utils.toHex(gas)
+    //let gas =await  contract.methods.breedWith(matronId, sireId).estimateGas()
+    gas = web3js.utils.toHex(20000000000000)
+    //gas = web3js.utils.toHex(gas)
     transaction = {
         "value": '0x0', // Only tokens
         "data": contract.methods.breedWith(matronId, sireId).encodeABI(),
@@ -751,7 +751,7 @@ breedWith = async(web3js, contract, fromAddress, matronId, sireId, contractAddre
         "gas": gas,
         "gasLimit": '0x7000000D40000',
         //"gasLimit":gas,
-        "gasPrice": web3js.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+        "gasPrice": web3js.utils.toHex(Math.trunc(2 * 1e1)),
         "chainId": chainIdHex
     };
 
@@ -787,13 +787,13 @@ breedWith = async(web3js, contract, fromAddress, matronId, sireId, contractAddre
 
 
 breedWithAuto = async(web3js, contract, fromAddress, matronId, sireId, value, contractAddress, decryptedAccount) =>{
-    const currentGasPrices = await GetCurrentGasPrices();
+    //const currentGasPrices = await GetCurrentGasPrices();
     let nonce = await web3js.eth.getTransactionCount(fromAddress);
 
     const nonceHex = web3js.utils.toHex(nonce)
     chainIdHex= web3js.utils.toHex(50)
-    let gas =await  contract.methods.breedWithAuto(matronId, sireId).estimateGas({from:fromAddress, value:value})
-    //gas = web3js.utils.toHex(5000000000)
+    //let gas =await  contract.methods.breedWithAuto(matronId, sireId).estimateGas({from:fromAddress, value:value})
+    let  gas = web3js.utils.toHex(1000000000)
     gas = web3js.utils.toHex(gas)
     transaction = {
         "value": value, // Only tokens
@@ -804,7 +804,7 @@ breedWithAuto = async(web3js, contract, fromAddress, matronId, sireId, value, co
         "gas": gas,
         "gasLimit": '0x7000000D40000',
         //"gasLimit":gas,
-        "gasPrice": web3js.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+        "gasPrice": web3js.utils.toHex(Math.trunc(1 * 1e9)),
         "chainId": chainIdHex
     };
 
