@@ -1228,8 +1228,8 @@ isReadyToBreed = async(contract, kittyId, fromAddress) => {
 getKitty = async(contract, kittyId, fromAddress) => {
     let name = await contract.methods.getKitty(kittyId).call({from: fromAddress});
     console.log(`kitty_info ${kittyId}: isGestating:${name[0]} ,isReady:${name[1]}, cooldownIndex:${name[2]},nextActionAt:${name[3]}，
-    siringWithId:${name[4]}, birthTime:${name[5]}, matronId:${name[6]},sireId:${name[6]},generation:${name[7]},
-    ,genes:${name[8]}`);
+    siringWithId:${name[4]}, birthTime:${name[5]}, matronId:${name[6]},sireId:${name[7]},generation:${name[8]},
+    ,genes:${name[9]}`);
 }
 
 
