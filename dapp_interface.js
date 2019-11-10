@@ -18,19 +18,19 @@ Tx = require('ethereumjs-tx');
 // let keystore = JSON.parse(keystoreStr)
 // let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
 //
-let rawTransaction = {
-
-    "from": "0x5cdb3d471f319a481a375f95ee557ce3acb3588c",
-
-    "to": "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b",
-
-    "value": web3.utils.toHex(web3.utils.toWei("50", "ether")),
-
-    "gas": 200000,
-
-    "chainId": 50
-
-};
+// let rawTransaction = {
+//
+//     "from": "0x5cdb3d471f319a481a375f95ee557ce3acb3588c",
+//
+//     "to": "0xfd7cdbf6cc424bfa04c556b3863a62b57209f40b",
+//
+//     "value": web3.utils.toHex(web3.utils.toWei("50", "ether")),
+//
+//     "gas": 200000,
+//
+//     "chainId": 50
+//
+// };
 
 
 async function SendTransaction(rawTransaction, decryptedAccount) {
@@ -91,97 +91,94 @@ async function SendTransaction(rawTransaction, decryptedAccount) {
 //
 //
 
-// //GetCurrentGasPrices()
-// let gasPriceGwei = 3;
-// let gasLimit = 3000000;
-// // Build a new transaction object.
-//
-// // call transfer function
-// TransferERC20Toekn = async() => {
-//     let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
-// //let keystoreStr = fileUtil.readFileSync('./keystore_fd7cdbf6cc424bfa04c556b3863a62b57209f40b')
-//     let keystore = JSON.parse(keystoreStr)
-//     let decryptedAccount = web3.eth.accounts.decrypt(keystore, '123');
-//     let amount = 1;
-//     let tokenAmount = web3.utils.toWei(amount.toString(), 'ether')
-//
-//     // The gas price is determined by the last few blocks median gas price.
-//     const avgGasPrice = await web3.eth.getGasPrice();
-// // current transaction gas prices from https://ethgasstation.info/
-//     const currentGasPrices = await GetCurrentGasPrices();
-//     let nonce = await web3.eth.getTransactionCount(fromAddress);
-// // Will call estimate the gas a method execution will take when executed in the EVM without.
-//     let estimateGas = await web3.eth.estimateGas({
-//         "value": '0x0', // Only tokens
-//         "data": contract.methods.transfer(toAddress, tokenAmount).encodeABI(),
-//         "from": fromAddress,
-//         "to": toAddress
-//     });
-//     console.log({
-//         estimateGas: estimateGas
-//     });
-//     const nonceHex = web3.utils.toHex(nonce)
-//     chainIdHex= web3.utils.toHex(50)
-//     transaction = {
-//         "value": '0x0', // Only tokens
-//         "data": contract.methods.transfer(toAddress, tokenAmount).encodeABI(),
-//         "from": fromAddress,
-//         "to": contractAddress,
-//         "nonce": nonceHex,
-//         //"gas": web3.utils.toHex(estimateGas),
-//         "gasLimit": '0x30D40',
-//        // "gasLimit": web3.utils.toHex(estimateGas),
-//         "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-//         "chainId": chainIdHex
-//     };
-//
-//     /**
-//      * ethereum-js
-//      * @type {Buffer}
-//      */
-//     // let privateKey = Buffer.from('971c668cb87f58afc33a69406bd504c26b46f22edd4833d681f5375accfc8d80', 'hex');
-//     // const tx = new Tx(transaction);
-//     // tx.sign(privateKey);
-//     // const serializedTx = tx.serialize();
-//     //
-//     // const receipt = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
-//     // console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`);
-//     //
-//     // console.log(`From\'s balance after transfer: ${await contract.methods.balanceOf(fromAddress).call()}`);
-//     // console.log(`To\'s balance after transfer: ${await contract.methods.balanceOf(toAddress).call()}`);
-//
-//     /**
-//      * web3.js
-//      */
-//     // Creates an account object from a private key.
-//     const senderAccount = web3.eth.accounts.privateKeyToAccount(decryptedAccount.privateKey);
-//     /**
-//      * This is where the transaction is authorized on your behalf.
-//      * The private key is what unlocks your wallet.
-//      */
-//     const signedTransaction = await senderAccount.signTransaction(transaction);
-//     console.log({
-//         transaction: transaction,
-//         amount: amount,
-//         tokenAmount: tokenAmount,
-//         avgGasPrice: avgGasPrice,
-//         signedTransaction: signedTransaction
-//     });
-//
-//     // We're ready! Submit the raw transaction details to the provider configured above.
-//     try {
-//         const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-//
-//         console.log({
-//             receipt: receipt
-//         });
-//
-//     } catch (error) {
-//         console.log({
-//             error: error.message
-//         });
-//     }
-// }
+//GetCurrentGasPrices()
+let gasPriceGwei = 3;
+let gasLimit = 3000000;
+// Build a new transaction object.
+
+// call transfer function
+TransferERC20Toekn = async(web3js, contract, fromAddress, toAddress, contractAddress, privateKey) => {
+
+    let tokenAmount = 100000;
+    //let tokenAmount = web3.utils.toWei(amount.toString(), 'ether')
+
+    // The gas price is determined by the last few blocks median gas price.
+    const avgGasPrice = await web3.eth.getGasPrice();
+// current transaction gas prices from https://ethgasstation.info/
+    const currentGasPrices = await GetCurrentGasPrices();
+    let nonce = await web3.eth.getTransactionCount(fromAddress);
+// Will call estimate the gas a method execution will take when executed in the EVM without.
+    let estimateGas = await web3.eth.estimateGas({
+        "value": '0x0', // Only tokens
+        "data": contract.methods.transfer(toAddress, tokenAmount).encodeABI(),
+        "from": fromAddress,
+        "to": toAddress
+    });
+    console.log({
+        estimateGas: estimateGas
+    });
+    const nonceHex = web3.utils.toHex(nonce)
+    chainIdHex= web3.utils.toHex(50)
+    transaction = {
+        "value": '0x0', // Only tokens
+        "data": contract.methods.transfer(toAddress, tokenAmount).encodeABI(),
+        "from": fromAddress,
+        "to": contractAddress,
+        "nonce": nonceHex,
+        //"gas": web3.utils.toHex(estimateGas),
+        "gasLimit": '0x30D40',
+       // "gasLimit": web3.utils.toHex(estimateGas),
+        "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+        "chainId": chainIdHex
+    };
+
+    /**
+     * ethereum-js
+     * @type {Buffer}
+     */
+    // let privateKey = Buffer.from('971c668cb87f58afc33a69406bd504c26b46f22edd4833d681f5375accfc8d80', 'hex');
+    // const tx = new Tx(transaction);
+    // tx.sign(privateKey);
+    // const serializedTx = tx.serialize();
+    //
+    // const receipt = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+    // console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`);
+    //
+    // console.log(`From\'s balance after transfer: ${await contract.methods.balanceOf(fromAddress).call()}`);
+    // console.log(`To\'s balance after transfer: ${await contract.methods.balanceOf(toAddress).call()}`);
+
+    /**
+     * web3.js
+     */
+    // Creates an account object from a private key.
+    const senderAccount = web3.eth.accounts.privateKeyToAccount(privateKey);
+    /**
+     * This is where the transaction is authorized on your behalf.
+     * The private key is what unlocks your wallet.
+     */
+    const signedTransaction = await senderAccount.signTransaction(transaction);
+    console.log({
+        transaction: transaction,
+        amount: tokenAmount,
+        tokenAmount: tokenAmount,
+        avgGasPrice: avgGasPrice,
+        signedTransaction: signedTransaction
+    });
+
+    // We're ready! Submit the raw transaction details to the provider configured above.
+    try {
+        const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
+
+        console.log({
+            receipt: receipt
+        });
+
+    } catch (error) {
+        console.log({
+            error: error.message
+        });
+    }
+}
 
 //TransferERC20Toekn()
 
@@ -512,6 +509,7 @@ addChain = async(web3js, contract, fromAddress,chain, proposal, contractAddress,
         });
     }
 }
+
 BalanceQuery = async(contract, Balanceaddress, fromAddress) => {
     let balance = await contract.methods.balanceOf(Balanceaddress).call({from: fromAddress});
     console.log(`Balance before send: ${balance}`);
@@ -1235,6 +1233,8 @@ getKitty = async(contract, kittyId, fromAddress) => {
 
 module.exports =
 {
+    TransferERC20Toekn,
+    SendTransaction,
     TransferFromERC721Toekn,
     OwnerQuery,
     OwnerOfQuery,

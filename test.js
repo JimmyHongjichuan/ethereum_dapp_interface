@@ -52,13 +52,30 @@ Web3 = require('web3');
 //     );
 
 
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    // set the provider you want from Web3.providers
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-}
+// if (typeof web3 !== 'undefined') {
+//     web3 = new Web3(web3.currentProvider);
+// } else {
+//     // set the provider you want from Web3.providers
+//     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+// }
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 web3.eth.getBlockNumber(function callback(err, value) { console.log("BlockNumber:" + value) });
+
+
+/**
+ * ERC20
+ */
+let abiStr_erc20basic = fileUtil.readFileSync('./ERC20Basic_abi');
+let abiArray_erc20basic = JSON.parse(abiStr_erc20basic);
+let contractAddressErc20 = "0xCc59d4B17E4D8bB7bef198E40D1e7E488C24ce76";//"0x0abfafdb75dd0bcc2b7789100fa45538db967fec";//
+let fromAddressErc20 = "0x66E1e75317F2dC279f4a418e001280b692E50070";
+let toAddressErc20 = "0xe535fA67052D60F14DE456E56D678edAf226323f";
+let contractErc20 = new web3.eth.Contract(abiArray_erc20basic, contractAddressErc20, {
+    from: fromAddressErc20
+});
+let privateKey = "0x61c37dd9b5eda5016c10c0ffde4b38f71336a191707f3471380ee75fd0ea1b23";
+dapp_inf.BalanceQuery(contractErc20, toAddressErc20, fromAddressErc20);
+dapp_inf.TransferERC20Toekn(web3, contractErc20, fromAddressErc20, toAddressErc20, contractAddressErc20, privateKey);
 /**
  * ERC721
  */
@@ -148,7 +165,7 @@ let decryptedAccountSaleClockAuction = web3.eth.accounts.decrypt(JSON.parse(keys
 contractSaleClockAuction= new web3.eth.Contract(abiArray_saleClockAuction, contractAddressSaleClockAuction, {
     from: fromAddressSale
 });
-dapp_inf.mNonFungibleContract(contractSaleClockAuction, fromAddressSale)
+//dapp_inf.mNonFungibleContract(contractSaleClockAuction, fromAddressSale)
 
 //siringclockAuction
 let abiStr_siringClockAuction = fileUtil.readFileSync('./SiringClockAuction_abi');
@@ -160,7 +177,7 @@ let decryptedAccountSiringClockAuction = web3.eth.accounts.decrypt(JSON.parse(ke
 contractSiringClockAuction= new web3.eth.Contract(abiArray_siringClockAuction, contractAddressSiringClockAuction, {
     from: fromAddressSiring
 });
-dapp_inf.mNonFungibleContract(contractSiringClockAuction, fromAddressSiring)
+//dapp_inf.mNonFungibleContract(contractSiringClockAuction, fromAddressSiring)
 
 //genescience
 let abiStr_GeneScience= fileUtil.readFileSync('./GeneScience_abi');
@@ -172,8 +189,8 @@ let decryptedAccountGeneScience = web3.eth.accounts.decrypt(JSON.parse(keystoreS
 contractGeneScience= new web3.eth.Contract(abiArray_GeneScience, contractAddressGeneScience, {
     from: fromAddressGeneScience
 });
-dapp_inf.isGeneScience(contractGeneScience, fromAddressGeneScience)
-dapp_inf.mixGenes(contractGeneScience, 0xa, 0x5, fromAddressGeneScience)
+//dapp_inf.isGeneScience(contractGeneScience, fromAddressGeneScience)
+//dapp_inf.mixGenes(contractGeneScience, 0xa, 0x5, fromAddressGeneScience)
 
 //kitty
 let abiStr_kitty = fileUtil.readFileSync('./CryptoKitty_abi');
@@ -189,12 +206,12 @@ contractKITTY= new web3.eth.Contract(abiArray_kitty, contractAddressKITTY, {
 // dapp_inf.canBreedWith(contractKITTY, 0x1, 0x3)
 // dapp_inf.isReadyToBreed(contractKITTY, 0x1)
 // dapp_inf.isReadyToBreed(contractKITTY, 0x5)
-dapp_inf.getKitty(contractKITTY, 0x1, fromAddressKITTY)
-dapp_inf.getKitty(contractKITTY, 0x2, fromAddressKITTY)
-dapp_inf.getKitty(contractKITTY, 0x3, fromAddressKITTY)
-dapp_inf.getKitty(contractKITTY, 0x4, fromAddressKITTY)
-dapp_inf.getKitty(contractKITTY, 0x5, fromAddressKITTY)
-dapp_inf.getKitty(contractKITTY, 0x6, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x1, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x2, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x3, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x4, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x5, fromAddressKITTY)
+// dapp_inf.getKitty(contractKITTY, 0x6, fromAddressKITTY)
 //dapp_inf.breedWith(web3, contractKITTY, fromAddressKITTY, 0x1, 0x2, contractAddressKITTY, decryptedAccountKitty)
 //dapp_inf.breedWithAuto(web3, contractKITTY, fromAddressKITTY, 0x3, 0x4, web3.utils.toWei("3","ether"), contractAddressKITTY, decryptedAccountKitty)
 //dapp_inf.createPromoKitty(web3, contractKITTY, fromAddressKITTY, 0x135246852741,  fromAddressKITTY,contractAddressKITTY, decryptedAccountKitty)
